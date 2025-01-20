@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperPro - Plataforma de Análises de Apostas Esportivas</title>
+    <!-- Link para ícones (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Link para Google Fonts (Roboto e Montserrat para o título) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto&display=swap" rel="stylesheet">
+    <!-- Estilos CSS -->
+    <style>
+        /* Reset básico para garantir consistência entre navegadores */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Variáveis de cores para facilitar a manutenção e consistência */
+        :root {
+            --cor-primaria: #1e3a8a; /* Azul escuro */
+            --cor-secundaria: #3b82f6; /* Azul médio */
+            --cor-accent: #10b981; /* Verde */
+            --cor-fundo: #f3f4f6; /* Cinza claro */
+            --cor-texto: #1f2937; /* Cinza escuro */
+            --cor-branca: #ffffff;
+            --cor-filtro-fundo: #ffffff;
+            --cor-filtro-borda: #d1d5db;
+            --cor-botao-fundo: #3b82f6;
+            --cor-botao-hover: #1e40af;
+            --cor-botao-texto: #ffffff;
+            --cor-botao-secundario-fundo: #e5e7eb;
+            --cor-botao-secundario-texto: #374151;
+            --cor-cartao-borda: #d1d5db;
+            --cor-cartao-hover: #e5e7eb;
+            --cor-tabela-cabecalho: #3b82f6;
+            --cor-tabela-texto: #1f2937;
+            --cor-tabela-borda: #d1d5db;
+            --cor-cabecalho-fundo: var(--cor-branca);
+            --cor-cabecalho-sombra: rgba(0, 0, 0, 0.1);
+            --cor-sidebar-fundo: var(--cor-primaria);
+            --cor-sidebar-ativa: var(--cor-secundaria);
+            --cor-sucesso-borda: #10b981; /* Verde para acerto */
+            --cor-erro-borda: #ef4444; /* Vermelho para erro */
+        }
+
+        /* Estilos para a Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px; /* Largura da sidebar */
+            height: 100%;
+            background-color: var(--cor-sidebar-fundo);
+            color: var(--cor-branca);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: var(--cor-sidebar-ativa);
+            border-bottom: 1px solid var(--cor-filtro-borda); /* Borda sutil */
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            /* Mantendo apenas o texto do logo */
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--cor-branca);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none; /* Esconder em desktop */
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding-top: 20px;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--cor-branca);
+            text-decoration: none;
+            transition: background 0.2s, border 0.2s;
+            border-radius: 4px;
+            font-size: 1rem;
+            border: 1px solid transparent; /* Borda transparente para manter o alinhamento */
+            flex-shrink: 0;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: var(--cor-sidebar-ativa);
+            border: 1px solid var(--cor-secundaria); /* Borda sutil no hover */
+        }
+
+        .sidebar-nav i {
+            margin-right: 10px;
+        }
+
+        /* Overlay para mobile */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 900;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 220px; /* Ajustar conforme a largura da sidebar */
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: var(--cor-fundo);
+            transition: margin-left 0.3s ease-in-out;
+            padding: 20px; /* Adicionar padding para não ficar grudado nas bordas */
+            overflow-y: auto;
+        }
+
+        /* Cabeçalho */
+        .header {
+            height: 70px; /* Aumento da altura para acomodar novos elementos */
+            background-color: var(--cor-cabecalho-fundo);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 2px 4px var(--cor-cabecalho-sombra);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--cor-filtro-borda); /* Borda sutil */
+            flex-shrink: 0; /* Evitar encolhimento */
+            flex-wrap: wrap; /* Permitir que os elementos envolvam */
+            position: relative; /* Para posicionamento absoluto do menu button */
+        }
+
+        /* Botão de Menu para Mobile */
+        .menu-btn {
+            display: none; /* Esconder em desktop */
+            background: none;
+            border: none;
+            color: var(--cor-texto);
+            font-size: 1.5rem;
+            cursor: pointer;
+            position: absolute; /* Posicionar absoluto */
+            left: 20px; /* Alinhar à esquerda */
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Logo no Cabeçalho */
+        .header-logo {
+            display: flex;
+            align-items: center;
+            flex: 1 1 200px; /* Flex-grow, flex-shrink, flex-basis */
+            justify-content: flex-start; /* Alinhar à esquerda no desktop */
+        }
+
+        .header-logo a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--cor-primaria);
+        }
+
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* Barra de Busca */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            flex: 2 1 300px; /* Flex-grow, flex-shrink, flex-basis */
+            max-width: 400px; /* Aumentar para mais espaço */
+            margin: 0 30px;
+            width: 100%; /* Garantir que ocupe a largura disponível */
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 5px 12px; /* Aumentado para 32px de altura */
+            border: 1px solid var(--cor-filtro-borda);
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+            font-size: 0.9rem; /* Aumentado para 0.9rem */
+            color: var(--cor-texto);
+            height: 32px; /* Definido para controlar a altura */
+        }
+
+        .search-bar button {
+            padding: 5px 12px; /* Aumentado para 32px de altura */
+            border: 1px solid transparent; /* Borda transparente para manter o alinhamento */
+            background-color: var(--cor-botao-fundo);
+            color: var(--cor-botao-texto);
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: background-color 0.3s, border 0.3s;
+            font-size: 0.9rem; /* Aumentado para 0.9rem */
+            height: 32px; /* Definido para controlar a altura */
+        }
+
+        .search-bar button:hover {
+            background-color: var(--cor-botao-hover);
+            border: 1px solid var(--cor-secundaria); /* Borda sutil no hover */
+        }
+
+        /* Filtros */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            background-color: var(--cor-filtro-fundo);
+            padding: 15px;
+            border: 1px solid var(--cor-filtro-borda);
+            border-radius: 8px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--cor-texto);
+        }
+
+        .filter-select, .filter-date {
+            padding: 8px 12px;
+            border: 1px solid var(--cor-filtro-borda);
+            border-radius: 4px;
+            outline: none;
+            width: 200px;
+            transition: border-color 0.2s;
+        }
+
+        .filter-select:focus, .filter-date:focus {
+            border-color: var(--cor-secundaria);
+        }
+
+        .filter-button {
+            padding: 10px 20px;
+            background-color: var(--cor-botao-fundo);
+            color: var(--cor-botao-texto);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .filter-button:hover {
+            background-color: var(--cor-botao-hover);
+        }
+
+        #clear-filters {
+            background-color: var(--cor-botao-secundario-fundo);
+            color: var(--cor-botao-secundario-texto);
+        }
+
+        #clear-filters:hover {
+            background-color: #e5e7eb;
+        }
+
+        /* Cards */
+        .analysis-card {
+            background-color: var(--cor-branca);
+            padding: 20px;
+            border-radius: 12px; /* Aumento do border-radius */
+            border: 1px solid var(--cor-cartao-borda); /* Reduzido de 2px para 1px */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Melhoria na sombra */
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .analysis-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Classes para indicar resultado */
+        .analysis-card.resultado-ganhou {
+            border-color: var(--cor-sucesso-borda);
+            background-color: rgba(16, 185, 129, 0.05); /* Verde claro */
+        }
+
+        .analysis-card.resultado-perdeu {
+            border-color: var(--cor-erro-borda);
+            background-color: rgba(239, 68, 68, 0.05); /* Vermelho claro */
+        }
+
+        .analysis-card h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            color: var(--cor-texto);
+            margin-bottom: 10px;
+        }
+
+        .analysis-card p {
+            color: #4b5563;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .card-footer {
+            font-size: 0.9rem;
+            color: #6b7280;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        /* Botões Remover */
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .card-actions button {
+            background: none;
+            border: 1px solid var(--cor-primaria); /* Adicionado borda para consistência */
+            color: var(--cor-primaria);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: color 0.3s, background-color 0.3s, border-color 0.3s;
+            padding: 5px 10px; /* Ajustado para harmonizar com a barra de busca */
+            border-radius: 4px;
+        }
+
+        .card-actions button:hover {
+            color: var(--cor-secundaria);
+            background-color: var(--cor-cartao-hover);
+            border-color: var(--cor-secundaria); /* Mudança da cor da borda no hover */
+        }
+
+        .card-actions button i {
+            margin-right: 5px;
+        }
+
+        /* Mensagens de Erro e Carregamento */
+        .message {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.1rem;
+        }
+
+        .message.error {
+            color: var(--cor-erro-borda);
+        }
+
+        .message.success {
+            color: var(--cor-sucesso-borda);
+        }
+
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            color: var(--cor-botao-fundo);
+        }
+
+        /* Footer */
+        .footer {
+            height: 40px; /* Redução da altura do rodapé */
+            background-color: var(--cor-primaria);
+            color: var(--cor-branca);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            margin-top: auto;
+            border-top: 1px solid var(--cor-filtro-borda); /* Borda sutil */
+        }
+
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 180px;
+            }
+
+            .main-content {
+                margin-left: 180px;
+            }
+
+            .header {
+                padding: 0 20px;
+                height: 100px; /* Manter altura fixa */
+                flex-wrap: wrap; /* Permitir quebra de linha */
+            }
+
+            .search-bar {
+                margin: 10px 0; /* Adicionado margem vertical */
+                max-width: 250px; /* Ajuste para telas menores */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 220px;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .overlay.active {
+                display: block;
+            }
+
+            .close-btn {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .feed {
+                padding: 10px;
+            }
+
+            /* Ocultar a barra de busca */
+            .search-bar {
+                display: none;
+            }
+
+            /* Botão de Menu visível apenas em mobile */
+            .menu-btn {
+                display: block;
+                position: absolute; /* Posicionar absoluto */
+                left: 20px; /* Alinhar à esquerda */
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            /* Centralizar o logo na versão mobile */
+            .header-logo {
+                align-self: center; /* Alinha o logo ao centro */
+                text-align: center; /* Centraliza o texto dentro do container */
+                flex: 1;
+            }
+
+            /* Ajustar layout da barra de busca para mobile */
+            .search-bar {
+                display: none; /* Garantir que a barra de busca esteja oculta */
+            }
+
+            /* Ajustes adicionais para os botões na versão mobile */
+            .card-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .card-actions button {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: center; /* Alinhar itens ao centro */
+                height: auto;
+                padding: 10px;
+            }
+
+            /* Aumento do espaçamento entre o cabeçalho e as dicas */
+            .feed {
+                margin-top: 20px; /* Ajuste conforme necessário */
+            }
+        }
+
+        /* Adição de espaçamento entre o cabeçalho e as dicas para telas maiores */
+        @media (min-width: 769px) {
+            .feed {
+                margin-top: 30px; /* Ajuste conforme necessário */
+            }
+        }
+    </style>
+
+    <!-- Favicon vazio para evitar erro 404 -->
+    <link rel="icon" href="data:,">
+
+    <!-- Inclusão da Biblioteca PapaParse -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+    <!-- Script JavaScript com Firebase Modular SDK -->
+    <script type="module">
+        // Importar as funções necessárias do SDK do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            doc, 
+            getDocs, 
+            setDoc, 
+            deleteDoc, 
+            getDoc, 
+            serverTimestamp,
+            addDoc,
+            updateDoc,
+            increment,
+            writeBatch
+        } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8147QhLWMcT0NdJGMCZhxS1nDpTOErpI",
+            authDomain: "superpro-8d45e.firebaseapp.com",
+            projectId: "superpro-8d45e",
+            storageBucket: "superpro-8d45e.appspot.com",
+            messagingSenderId: "732335019424",
+            appId: "1:732335019424:web:5a743efffe3d62cc9980c5"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // URL da planilha publicada no formato CSV
+        const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTWlGNMaJfx6YMl0NaV2SIfCCKXxnP4Z51nXI62n0pG-qhHfQsHldYN4eYOtxanC2h2NzyzIfAHH8ax/pub?output=csv';
+
+        // Variáveis para armazenamento de dados e filtros
+        let todasAsDicas = [];
+        let dicasFiltradas = [];
+
+        // ------------------- INICIALIZAR ESTRUTURA DO FIRESTORE -------------------
+        const inicializarEstruturaFirestore = async (usuario) => {
+            if (!usuario) return;
+
+            const usuarioId = usuario.uid;
+            const referenciaDocumentoUsuario = doc(db, 'users', usuarioId);
+            const documentoUsuario = await getDoc(referenciaDocumentoUsuario);
+
+            if (!documentoUsuario.exists()) {
+                // Criar documento de usuário se não existir
+                await setDoc(referenciaDocumentoUsuario, {
+                    email: usuario.email,
+                    createdAt: serverTimestamp()
+                    // Adicione outros campos necessários aqui
+                });
+                console.log(`Documento de usuário criado para UID: ${usuarioId}`);
+            } else {
+                console.log(`Documento de usuário já existe para UID: ${usuarioId}`);
+            }
+        };
+
+        // ------------------- BUSCAR DADOS DA PLANILHA -------------------
+        const buscarDicasDaPlanilha = async () => {
+            try {
+                const resposta = await fetch(sheetURL);
+                if (!resposta.ok) {
+                    throw new Error(`Erro ao buscar dados: ${resposta.statusText}`);
+                }
+                const dadosCSV = await resposta.text();
+                console.log("Dados CSV recebidos:", dadosCSV); // Debug
+                const dicas = parsearCSV(dadosCSV);
+                console.log("Dicas parseadas:", dicas); // Debug
+
+                todasAsDicas = dicas;
+                preencherFiltroTipster(dicas);
+                await garantirDocumentosDeDicas(dicas); // Garantir que os documentos de dicas existam
+                renderizarDicas(todasAsDicas);
+
+            } catch (erro) {
+                console.error('Erro ao buscar dicas:', erro);
+                document.getElementById('tips-container').innerHTML = 
+                    '<p>Erro ao carregar as dicas. Por favor, tente novamente mais tarde.</p>';
+            }
+        };
+
+        // Função simples para converter CSV em array de objetos
+        const parsearCSV = (csv) => {
+            const linhas = csv.split('\n').filter(linha => linha.trim() !== '');
+            const cabecalhos = linhas[0].split(',').map(cabecalho => cabecalho.trim());
+
+            const dados = linhas.slice(1).map(linha => {
+                const valores = linha.split(',').map(valor => valor.trim());
+                const objeto = {};
+                cabecalhos.forEach((cabecalho, indice) => {
+                    objeto[cabecalho] = valores[indice] || '';
+                });
+                return objeto;
+            });
+
+            return dados;
+        };
+
+        // ------------------- GARANTIR DOCUMENTOS DE DICAS -------------------
+        const garantirDocumentosDeDicas = async (dicas) => {
+            const lote = writeBatch(db);
+
+            dicas.forEach(dica => {
+                const dicaId = dica['ID'];
+                const referenciaDocumentoDica = doc(db, 'dicas', dicaId);
+                lote.set(referenciaDocumentoDica, {
+                    titulo: dica['Título da Dica'],
+                    conteudo: dica['Conteúdo da Dica'],
+                    odd: parseFloat(dica['Odd']) || 0,
+                    resultado: dica['Resultado'] ? dica['Resultado'].toLowerCase().trim() : '',
+                    autor: dica['Autor'],
+                    data: dica['Data']
+                }, { merge: true }); // Usar merge para não sobrescrever campos existentes
+            });
+
+            try {
+                await lote.commit();
+                console.log('Documentos de dicas garantidos no Firestore.');
+            } catch (erro) {
+                console.error('Erro ao garantir documentos de dicas:', erro);
+            }
+        };
+
+        // ------------------- FILTROS -------------------
+        const preencherFiltroTipster = (dicas) => {
+            const conjuntoTipsters = new Set(dicas.map(dica => dica['Autor']));
+            const filtroTipster = document.getElementById('filter-tipster');
+            conjuntoTipsters.forEach(tipster => {
+                const opcao = document.createElement('option');
+                opcao.value = tipster;
+                opcao.textContent = tipster;
+                filtroTipster.appendChild(opcao);
+            });
+        };
+
+        const aplicarFiltros = () => {
+            const tipsterSelecionado = document.getElementById('filter-tipster').value;
+            const dataSelecionada = document.getElementById('filter-date').value;
+
+            dicasFiltradas = todasAsDicas.filter(dica => {
+                let valido = true;
+
+                // Filtro por tipster
+                if (tipsterSelecionado !== 'all') {
+                    valido = valido && (dica['Autor'] === tipsterSelecionado);
+                }
+
+                // Filtro por data
+                if (dataSelecionada) {
+                    const dataDica = parsearData(dica['Data']);
+                    const dataFiltro = new Date(dataSelecionada);
+                    valido = valido && (
+                        dataDica.getFullYear() === dataFiltro.getFullYear() &&
+                        dataDica.getMonth() === dataFiltro.getMonth() &&
+                        dataDica.getDate() === dataFiltro.getDate()
+                    );
+                }
+
+                return valido;
+            });
+
+            renderizarDicas(dicasFiltradas);
+        };
+
+        const limparFiltros = () => {
+            document.getElementById('filter-tipster').value = 'all';
+            document.getElementById('filter-date').value = '';
+            dicasFiltradas = todasAsDicas;
+            renderizarDicas(dicasFiltradas);
+        };
+
+        // ------------------- RENDERIZAR DICAS -------------------
+        const renderizarDicas = (dicas) => {
+            const containerDicas = document.getElementById('tips-container');
+            containerDicas.innerHTML = '';
+
+            if (dicas.length === 0) {
+                containerDicas.innerHTML = '<p>Nenhuma dica encontrada com os filtros selecionados.</p>';
+                return;
+            }
+
+            // Agrupar dicas por data
+            const dicasPorData = dicas.reduce((acumulador, dica) => {
+                const chaveData = formatarData(dica['Data']);
+                if (!acumulador[chaveData]) {
+                    acumulador[chaveData] = [];
+                }
+                acumulador[chaveData].push(dica);
+                return acumulador;
+            }, {});
+
+            // Ordenar datas (mais recentes primeiro)
+            const datasOrdenadas = Object.keys(dicasPorData).sort((a, b) => {
+                const dataA = new Date(a.split('/').reverse().join('-'));
+                const dataB = new Date(b.split('/').reverse().join('-'));
+                return dataB - dataA;
+            });
+
+            // Para cada data, criar um bloco de dicas
+            datasOrdenadas.forEach(data => {
+                const cabecalhoData = document.createElement('h3');
+                cabecalhoData.innerText = data;
+                cabecalhoData.style.marginTop = '20px';
+                cabecalhoData.style.marginBottom = '10px';
+                containerDicas.appendChild(cabecalhoData);
+
+                dicasPorData[data].forEach(dica => {
+                    const dicaId = dica['ID'];
+                    const resultado = dica['Resultado'] ? dica['Resultado'].toLowerCase().trim() : '';
+                    const card = document.createElement('div');
+
+                    // Adicionar classe de acordo com o resultado
+                    if (resultado === 'ganhou') {
+                        card.classList.add('analysis-card', 'resultado-ganhou');
+                        card.innerHTML = `
+                            <h2>${dica['Título da Dica']}</h2>
+                            <p>${dica['Conteúdo da Dica']}</p>
+                            <p><strong>Odd:</strong> ${formatarOdd(dica['Odd'])}</p>
+                            <p><strong>Resultado:</strong> ${dica['Resultado']}</p>
+                            <div class="card-footer">
+                                <span><strong>Tipster:</strong> ${dica['Autor']}</span>
+                                <span><strong>Publicado em:</strong> ${data}</span>
+                            </div>
+                            <div class="card-actions">
+                                <button onclick="selecionarDica('${dicaId}')" id="botao-selecionar-${dicaId}">
+                                    <i class="fas fa-plus"></i> Adicionar
+                                </button>
+                            </div>
+                        `;
+                    } else if (resultado === 'perdeu') {
+                        card.classList.add('analysis-card', 'resultado-perdeu');
+                        card.innerHTML = `
+                            <h2>${dica['Título da Dica']}</h2>
+                            <p>${dica['Conteúdo da Dica']}</p>
+                            <p><strong>Odd:</strong> ${formatarOdd(dica['Odd'])}</p>
+                            <p><strong>Resultado:</strong> ${dica['Resultado']}</p>
+                            <div class="card-footer">
+                                <span><strong>Tipster:</strong> ${dica['Autor']}</span>
+                                <span><strong>Publicado em:</strong> ${data}</span>
+                            </div>
+                            <div class="card-actions">
+                                <button onclick="selecionarDica('${dicaId}')" id="botao-selecionar-${dicaId}">
+                                    <i class="fas fa-plus"></i> Adicionar
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        // Caso não haja informação sobre o resultado
+                        card.classList.add('analysis-card');
+                        card.innerHTML = `
+                            <h2>${dica['Título da Dica']}</h2>
+                            <p>${dica['Conteúdo da Dica']}</p>
+                            <p><strong>Odd:</strong> ${formatarOdd(dica['Odd'])}</p>
+                            <p><strong>Resultado:</strong> ${dica['Resultado'] || 'Indefinido'}</p>
+                            <div class="card-footer">
+                                <span><strong>Tipster:</strong> ${dica['Autor']}</span>
+                                <span><strong>Publicado em:</strong> ${data}</span>
+                            </div>
+                            <div class="card-actions">
+                                <button onclick="selecionarDica('${dicaId}')" id="botao-selecionar-${dicaId}">
+                                    <i class="fas fa-plus"></i> Adicionar
+                                </button>
+                            </div>
+                        `;
+                    }
+
+                    containerDicas.appendChild(card);
+                });
+            });
+
+            if (auth.currentUser) {
+                carregarSelecoesIniciais();
+            }
+        };
+
+        // Formatar data "DD/MM/AAAA" mantendo o formato
+        const formatarData = (dataString) => {
+            const partes = dataString.split('/');
+            if (partes.length !== 3) return dataString;
+            const [dia, mes, ano] = partes;
+            return `${dia}/${mes}/${ano}`;
+        };
+
+        // Converter data "DD/MM/AAAA" em objeto Date
+        const parsearData = (dataString) => {
+            const partes = dataString.split('/');
+            if (partes.length !== 3) return new Date();
+            const [dia, mes, ano] = partes;
+            return new Date(`${ano}-${mes}-${dia}`);
+        };
+
+        // Formatar valores de Odd
+        const formatarOdd = (odd) => {
+            const numero = parseFloat(odd);
+            if (isNaN(numero)) return '0.00';
+            return numero.toFixed(2);
+        };
+
+        // ------------------- FUNÇÕES DE SELEÇÃO DE DICAS -------------------
+        window.selecionarDica = async (dicaId) => {
+            const usuario = auth.currentUser;
+            if (!usuario) {
+                alert("Por favor, faça login para selecionar dicas.");
+                return;
+            }
+
+            const usuarioId = usuario.uid;
+            const referenciaSelecao = doc(db, 'users', usuarioId, 'selecoes', dicaId);
+
+            try {
+                const documentoSelecao = await getDoc(referenciaSelecao);
+                if (documentoSelecao.exists()) {
+                    // Já selecionado => remover seleção
+                    await deleteDoc(referenciaSelecao);
+                    const botao = document.getElementById(`botao-selecionar-${dicaId}`);
+                    if (botao) {
+                        botao.classList.remove('button-favorited');
+                        botao.innerHTML = `<i class="fas fa-plus"></i> Adicionar`;
+                    }
+                } else {
+                    // Ainda não selecionado => adicionar seleção
+                    await setDoc(referenciaSelecao, {
+                        dicaId: dicaId,
+                        selecionadoEm: serverTimestamp()
+                    });
+                    const botao = document.getElementById(`botao-selecionar-${dicaId}`);
+                    if (botao) {
+                        botao.classList.add('button-favorited');
+                        botao.innerHTML = `<i class="fas fa-check"></i> Selecionado`;
+                    }
+                }
+            } catch (erro) {
+                console.error('Erro ao gerenciar seleção:', erro);
+                alert("Ocorreu um erro ao processar sua seleção. Por favor, tente novamente.");
+            }
+        };
+
+        const carregarSelecoesIniciais = async () => {
+            const usuario = auth.currentUser;
+            if (!usuario) return;
+            const usuarioId = usuario.uid;
+
+            try {
+                const referenciaColecaoSelecoes = collection(db, 'users', usuarioId, 'selecoes');
+                const snapshotSelecoes = await getDocs(referenciaColecaoSelecoes);
+
+                snapshotSelecoes.forEach((documentoSelecao) => {
+                    const dicaId = documentoSelecao.id;
+                    const botaoSelecionar = document.getElementById(`botao-selecionar-${dicaId}`);
+                    if (botaoSelecionar) {
+                        botaoSelecionar.classList.add('button-favorited');
+                        botaoSelecionar.innerHTML = `<i class="fas fa-check"></i> Selecionado`;
+                    }
+                });
+            } catch (erro) {
+                console.error('Erro ao carregar seleções:', erro);
+            }
+        };
+
+        // ------------------- AUTENTICAÇÃO -------------------
+        // Atualizar UI com base no estado de autenticação
+        const atualizarUIAutenticacao = (usuario) => {
+            const botoesLogout = document.querySelectorAll('.logout-btn');
+            botoesLogout.forEach(botao => {
+                if (usuario) {
+                    botao.textContent = "Sair";
+                    botao.href = "#";
+                    botao.onclick = async (evento) => {
+                        evento.preventDefault();
+                        await fazerLogout();
+                    };
+                } else {
+                    botao.textContent = "Login";
+                    botao.href = "index.html"; // Redirecionar para a página de login
+                }
+            });
+        };
+
+        // Função para efetuar logout
+        const fazerLogout = async () => {
+            try {
+                await signOut(auth);
+                alert("Logout realizado com sucesso!");
+                window.location.href = 'index.html'; // Redireciona para index.html após logout
+            } catch (erro) {
+                console.error('Erro ao fazer logout:', erro);
+                alert("Ocorreu um erro ao fazer logout. Por favor, tente novamente.");
+            }
+        };
+
+        // Listener para mudanças no estado de autenticação
+        onAuthStateChanged(auth, async (usuario) => {
+            if (usuario) {
+                console.log(`Usuário autenticado: ${usuario.uid}`);
+                await inicializarEstruturaFirestore(usuario);
+                // Agora que o usuário está autenticado, buscar as dicas
+                await buscarDicasDaPlanilha();
+                // Re-renderizar as dicas para atualizar o estado das seleções
+                renderizarDicas(todasAsDicas);
+            } else {
+                console.log('Nenhum usuário autenticado');
+                document.getElementById('tips-container').innerHTML = '<p>Por favor, faça login para ver as dicas.</p>';
+            }
+            atualizarUIAutenticacao(usuario);
+        });
+
+        // ------------------- INICIALIZAÇÃO -------------------
+        const inicializar = () => {
+            document.getElementById('apply-filters').addEventListener('click', (evento) => {
+                evento.preventDefault();
+                aplicarFiltros();
+            });
+            document.getElementById('clear-filters').addEventListener('click', (evento) => {
+                evento.preventDefault();
+                limparFiltros();
+            });
+
+            // Sidebar toggle para mobile
+            const botaoMenu = document.getElementById('menu-btn');
+            const botaoFechar = document.getElementById('close-btn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+
+            if (botaoMenu) {
+                botaoMenu.addEventListener('click', () => {
+                    sidebar.classList.add('active');
+                    overlay.classList.add('active');
+                });
+            }
+
+            if (botaoFechar) {
+                botaoFechar.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
+        };
+
+        window.onload = inicializar;
+    </script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1 class="logo">SuperPro</h1>
+            <button class="close-btn" id="close-btn" aria-label="Fechar Sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="index2.html" aria-label="Home">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="analise.html" aria-label="Análises">
+                        <i class="fas fa-chart-bar"></i>
+                        Análises
+                    </a>
+                </li>
+                <li>
+                    <a href="jogos.html" aria-label="Explorar">
+                        <i class="fas fa-compass"></i>
+                        Explorar
+                    </a>
+                </li>
+                <li>
+                    <a href="selecao.html" aria-label="Minhas Seleções">
+                        <i class="fas fa-list"></i>
+                        Minhas Seleções
+                    </a>
+                </li>
+                <li>
+                    <a href="perfil.html" aria-label="Perfil">
+                        <i class="fas fa-user"></i>
+                        Perfil
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="logout-btn" aria-label="Sair">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Overlay para mobile -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <!-- Botão de menu para mobile -->
+            <button class="menu-btn" id="menu-btn" aria-label="Abrir Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <!-- Logo no Cabeçalho -->
+            <div class="header-logo">
+                <a href="index2.html" aria-label="SuperPro Home">
+                    <span class="logo-text">SuperPro</span>
+                </a>
+            </div>
+            <!-- Barra de Busca -->
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Buscar análises ou tipsters..." aria-label="Buscar">
+                <button id="search-btn" aria-label="Buscar">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <!-- Ícones de Notificação e Perfil Removidos -->
+        </header>
+
+        <!-- Feed de Análises -->
+        <main class="feed" id="feed">
+            <!-- Filtros -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="filter-tipster">Tipster:</label>
+                    <select id="filter-tipster" class="filter-select">
+                        <option value="all">Todos</option>
+                        <!-- Opções serão preenchidas dinamicamente -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-date">Data:</label>
+                    <input type="date" id="filter-date" class="filter-date">
+                </div>
+                <button id="apply-filters" class="filter-button"><i class="fas fa-filter"></i> Aplicar Filtros</button>
+                <button id="clear-filters" class="filter-button"><i class="fas fa-times-circle"></i> Limpar Filtros</button>
+            </div>
+            <!-- As dicas serão inseridas aqui dinamicamente -->
+            <div id="tips-container"></div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            © 2025 SuperPro. Todos os direitos reservados.
+        </footer>
+    </div>
+</body>
+</html>
+
