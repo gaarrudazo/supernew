@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Dicas de Apostas Esportivas</title>
+    <!-- Link para Font Awesome (para ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Link para Google Fonts (opcional) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto&display=swap" rel="stylesheet">
+    <!-- Favicon Vazio para Evitar Erro 404 -->
+    <link rel="icon" href="data:,">
+    <!-- Estilos CSS -->
+    <style>
+        /* Reset Básico para Garantir Consistência entre Navegadores */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Variáveis de Cores para Facilitar a Manutenção e Consistência */
+        :root {
+            /* Cores da Plataforma de Dicas */
+            --cor-primaria: #1e3a8a; /* Azul Escuro */
+            --cor-secundaria: #3b82f6; /* Azul Médio */
+            --cor-accent: #2563eb; /* Azul Mais Claro */
+            --cor-fundo: #f3f4f6; /* Cinza Claro */
+            --cor-texto: #1f2937; /* Cinza Escuro */
+            --cor-branca: #ffffff;
+            --cor-botao-fundo: var(--cor-primaria);
+            --cor-botao-hover: var(--cor-secundaria);
+            --cor-botao-texto: var(--cor-branca);
+            --cor-error: #ef4444; /* Vermelho para Erros */
+            --cor-success: #10b981; /* Verde para Sucesso */
+
+            /* Cores da Sidebar (Reutilizadas para Consistência) */
+            --color-sidebar-fundo: var(--cor-primaria);
+            --color-sidebar-ativa: var(--cor-secundaria);
+            --color-sidebar-texto: var(--cor-branca);
+            --color-close-btn: var(--cor-branca);
+            --color-menu-btn: var(--cor-texto);
+        }
+
+        /* Estilos para a Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px; /* Largura da sidebar */
+            height: 100%;
+            background-color: var(--color-sidebar-fundo);
+            color: var(--color-sidebar-texto);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: var(--color-sidebar-ativa);
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            /* Mantendo apenas o texto do logo */
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--color-close-btn);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none; /* Esconder em desktop */
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding-top: 20px;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--color-sidebar-texto);
+            text-decoration: none;
+            transition: background 0.2s;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: var(--color-sidebar-ativa);
+        }
+
+        .sidebar-nav i {
+            margin-right: 10px;
+        }
+
+        /* Overlay para mobile */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 900;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 220px; /* Ajustar conforme a largura da sidebar */
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: var(--cor-fundo);
+            transition: margin-left 0.3s ease-in-out;
+            padding: 20px; /* Adicionar padding para não ficar grudado nas bordas */
+            overflow-y: auto;
+        }
+
+        /* Cabeçalho */
+        header {
+            background-color: var(--cor-primaria);
+            color: var(--cor-branca);
+            padding: 20px;
+            text-align: center;
+            position: relative; /* Para posicionamento absoluto do botão de menu */
+        }
+
+        header h1 {
+            font-size: 2rem;
+        }
+
+        /* Botão de Menu para Mobile */
+        .menu-btn {
+            position: absolute;
+            left: 20px; /* Posicionado dentro da tela */
+            top: 20px;
+            background: none;
+            border: none;
+            color: var(--color-menu-btn);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none; /* Esconder em desktop */
+        }
+
+        /* Seção de Busca */
+        .search-section {
+            padding: 20px;
+            background-color: var(--cor-branca);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex; /* Utiliza Flexbox para alinhamento */
+            justify-content: center; /* Centraliza o formulário */
+            align-items: flex-start; /* Alinha os elementos ao topo */
+        }
+
+        /* Estilos do Formulário */
+        #search-form {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px; /* Espaçamento entre os elementos */
+            width: 100%;
+            max-width: 600px; /* Define um limite de largura para melhor aparência */
+        }
+
+        /* Contêiner do Campo de Data */
+        #date-container {
+            flex: 1; /* Permite que o campo de data ocupe o espaço disponível */
+            display: flex;
+            flex-direction: column;
+            cursor: pointer; /* Indica que o contêiner é clicável */
+        }
+
+        /* Contêiner do Botão */
+        #button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centraliza o botão horizontalmente */
+            cursor: pointer; /* Indica que o contêiner é clicável */
+        }
+
+        /* Estilização do Label do Botão */
+        .button-label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--cor-texto);
+            text-align: center; /* Centraliza o texto do label */
+        }
+
+        /* Estilização do Label */
+        #date-container label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--cor-texto);
+        }
+
+        /* Estilização do Campo de Data */
+        #dateFrom {
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 1rem;
+            height: 48px; /* Define uma altura consistente */
+            width: 100%;
+            appearance: none; /* Remove estilos padrão do navegador */
+            background-color: #fff;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="%23999" viewBox="0 0 16 16"><path d="M1 3.5a.5.5 0 0 1 .5-.5h.5V2a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1h6V2a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1h.5a.5.5 0 0 1 .5.5V4H1V3.5zM1 5v9.5A1.5 1.5 0 0 0 2.5 16h11a1.5 1.5 0 0 0 1.5-1.5V5H1z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px 16px;
+            cursor: pointer; /* Indica que o input é clicável */
+        }
+
+        /* Remover a seta padrão do input date no Chrome */
+        /* Comentado para permitir o funcionamento correto do date picker */
+        /*
+        input[type="date"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            display: none;
+            -webkit-appearance: none;
+        }
+        */
+
+        /* Botão de Buscar Dicas */
+        #search-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 10px 20px;
+            background-color: var(--cor-botao-fundo);
+            color: var(--cor-botao-texto);
+            border: 2px solid #FFD700; /* Borda Amarela */
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            height: 48px; /* Mesma altura do input */
+            width: 200px; /* Define uma largura fixa para o botão */
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        #search-button:hover {
+            background-color: var(--cor-botao-hover);
+            border-color: #FFC107; /* Borda Amarela mais clara no hover */
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 220px;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .overlay.active {
+                display: block;
+            }
+
+            .close-btn {
+                display: block;
+            }
+
+            .menu-btn {
+                display: block;
+                left: 20px; /* Ajustado para estar dentro da tela */
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .search-section {
+                padding: 15px;
+            }
+
+            #search-form {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+
+            #date-container, #button-container {
+                width: 100%;
+            }
+
+            .button-label {
+                text-align: center; /* Centraliza o texto do label no mobile */
+            }
+
+            #search-button {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+                padding: 12px 16px;
+                font-size: 1rem;
+                height: 48px;
+            }
+        }
+
+        /* Cartão de Dica */
+        .prediction-card {
+            background-color: var(--cor-branca);
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .prediction-card h2 {
+            font-size: 1.5rem;
+            color: var(--cor-texto);
+            margin-bottom: 10px;
+        }
+
+        .prediction-card p {
+            margin-bottom: 8px;
+            color: #4b5563;
+        }
+
+        .prediction-card .details {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .prediction-card .details span {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .prediction-card.correct {
+            border-left: 5px solid var(--cor-success);
+        }
+
+        .prediction-card.incorrect {
+            border-left: 5px solid var(--cor-error);
+        }
+
+        /* Rodapé */
+        footer {
+            background-color: var(--cor-primaria);
+            color: var(--cor-branca);
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        /* Mensagens de Erro */
+        .error {
+            color: var(--cor-error);
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Mensagens de Sucesso */
+        .success {
+            color: var(--cor-success);
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1 class="logo"> SuperPro</h1>
+            <button class="close-btn" id="close-btn" aria-label="Fechar Sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="index3.html" aria-label="Home">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="analise.html" aria-label="Análises">
+                        <i class="fas fa-chart-bar"></i>
+                        Análises
+                    </a>
+                </li>
+                <li>
+                    <a href="jogos.html" aria-label="Explorar">
+                        <i class="fas fa-compass"></i>
+                        Explorar
+                    </a>
+                </li>
+                <li>
+                    <a href="selecao.html" aria-label="Minhas Seleções">
+                        <i class="fas fa-list"></i>
+                        Minhas Seleções
+                    </a>
+                </li>
+                <li>
+                    <a href="perfil.html" aria-label="Perfil">
+                        <i class="fas fa-user"></i>
+                        Perfil
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="logout-btn" aria-label="Sair">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Overlay para mobile -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Cabeçalho -->
+        <header>
+            <button class="menu-btn" id="menu-btn" aria-label="Abrir Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>SuperPro</h1>
+        </header>
+
+        <!-- Seção de Busca -->
+        <section class="search-section">
+            <form id="search-form">
+                <div class="form-group" id="date-container">
+                    <label for="dateFrom">Data:</label>
+                    <input type="date" id="dateFrom" name="dateFrom" required>
+                </div>
+                <div class="form-group" id="button-container">
+                    <!-- Substituímos o <label> por um <span> para evitar conflitos -->
+                    <span class="button-label">Buscar Dicas:</span>
+                    <button type="submit" id="search-button"><i class="fas fa-search"></i> Buscar Dicas</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Seção de Resultados -->
+        <section class="results-section" id="results">
+            <!-- As dicas serão exibidas aqui -->
+        </section>
+
+        <!-- Rodapé -->
+        <footer>
+            <p>© 2025 Plataforma de Dicas de Apostas Esportivas. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    
+<!-- Firebase SDK (Abordagem Modular) -->
+<script type="module">
+    // Importar as funções necessárias do SDK do Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { 
+        getFirestore, 
+        collection, 
+        getDocs, 
+        deleteDoc, 
+        doc, 
+        query, 
+        where 
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { 
+        getAuth, 
+        signOut, 
+        onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+    // Configuração do Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyC8147QhLWMcT0NdJGMCZhxS1nDpTOErpI",
+        authDomain: "superpro-8d45e.firebaseapp.com",
+        projectId: "superpro-8d45e",
+        storageBucket: "superpro-8d45e.appspot.com",
+        messagingSenderId: "732335019424",
+        appId: "1:732335019424:web:5a743efffe3d62cc9980c5"
+    };
+
+    // Inicializar Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Elementos do DOM
+    const sidebar = document.getElementById('sidebar');
+    const closeBtn = document.getElementById('close-btn');
+    const menuBtn = document.getElementById('menu-btn');
+    const overlay = document.getElementById('overlay');
+    const logoutBtn = document.getElementById('logout-btn');
+    const selectionsSection = document.getElementById('selections');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('search-form');
+        const resultsSection = document.getElementById('results');
+
+        // Elementos da Sidebar
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('close-btn');
+        const menuBtn = document.getElementById('menu-btn');
+        const overlay = document.getElementById('overlay');
+
+        // Eventos para abrir e fechar a sidebar
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Evento de submit do formulário
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Impede o comportamento padrão do formulário
+
+            // Obter valor da data do formulário
+            const dateFromInput = document.getElementById('dateFrom');
+            const dateFrom = dateFromInput.value;
+
+            // Validar se a data foi selecionada
+            if (!dateFrom) {
+                alert('Por favor, selecione uma data.');
+                return;
+            }
+
+            // Definir a dataTo como a mesma data selecionada
+            const dateTo = dateFrom;
+
+            // Limpar resultados anteriores e exibir mensagem de carregamento
+            resultsSection.innerHTML = '<p>Carregando dicas...</p>';
+
+            // Chamada à API usando Fetch (com backend)
+            try {
+                // Substituindo pela chamada ao backend que gerencia a chave da API
+                const apiUrl = `http://localhost:3000/api/sports?dateFrom=${encodeURIComponent(dateFrom)}&dateTo=${encodeURIComponent(dateTo)}`;
+                const response = await fetch(apiUrl, {
+                    method: 'GET'
+                });
+
+                // Verificar se a resposta foi bem-sucedida
+                if (!response.ok) {
+                    throw new Error(`Erro na solicitação: ${response.status} ${response.statusText}`);
+                }
+
+                // Converter a resposta para JSON
+                const data = await response.json();
+
+                // Adicionar um log para inspecionar a estrutura dos dados
+                console.log('Dados da API:', data);
+
+                // Verificar se há dicas retornadas
+                if (!Array.isArray(data) || data.length === 0) {
+                    resultsSection.innerHTML = '<p>Nenhuma dica encontrada para o período selecionado.</p>';
+                    return;
+                }
+
+                // Renderizar as dicas na página
+                renderPredictions(data);
+
+            } catch (error) {
+                console.error('Erro ao buscar dicas:', error);
+                resultsSection.innerHTML = `<p class="error">Ocorreu um erro ao buscar as dicas. Por favor, tente novamente mais tarde.</p>`;
+            }
+        });
+
+        /**
+         * Função para renderizar as dicas de apostas na página
+         * @param {Array} predictions - Array de objetos contendo as dicas de apostas
+         */
+        function renderPredictions(predictions) {
+            // Limpar a seção de resultados
+            resultsSection.innerHTML = '';
+
+            // Iterar sobre cada dica e criar elementos HTML para exibição
+            predictions.forEach((prediction) => {
+                // Criar o cartão da dica
+                const predictionCard = document.createElement('div');
+                predictionCard.classList.add('prediction-card');
+
+                // Título da Dica (Liga e Times)
+                const league = prediction.competition_full || 'Liga Desconhecida';
+                const homeTeam = prediction.homeTeam || 'Time Local';
+                const awayTeam = prediction.awayTeam || 'Time Visitante';
+                const titleText = `${league} - ${homeTeam} vs ${awayTeam}`;
+                const titleElement = document.createElement('h2');
+                titleElement.textContent = titleText;
+                predictionCard.appendChild(titleElement);
+
+                // Previsão da Dica
+                let predictionText = 'Previsão não disponível';
+                switch(prediction['1x2']) {
+                    case '1':
+                        predictionText = 'Vitória do Time da Casa';
+                        break;
+                    case '2':
+                        predictionText = 'Vitória do Time Visitante';
+                        break;
+                    case 'X':
+                        predictionText = 'Empate';
+                        break;
+                    case '12':
+                        predictionText = 'Vitória de Qualquer Time';
+                        break;
+                    case '1X':
+                        predictionText = 'Vitória do Time da Casa ou Empate';
+                        break;
+                    case '2X':
+                        predictionText = 'Vitória do Time Visitante ou Empate';
+                        break;
+                    default:
+                        predictionText = 'Previsão não disponível';
+                }
+
+                const predictionParagraph = document.createElement('p');
+                predictionParagraph.innerHTML = `<strong>Previsão:</strong> ${predictionText}`;
+                predictionCard.appendChild(predictionParagraph);
+
+                // Odd da Dica
+                let odds = 'N/A';
+                switch(prediction['1x2']) {
+                    case '1':
+                        odds = prediction['home_win_odds'] || 'N/A';
+                        break;
+                    case '2':
+                        odds = prediction['away_win_odds'] || 'N/A';
+                        break;
+                    case 'X':
+                        odds = prediction['draw_odds'] || 'N/A';
+                        break;
+                    case '12':
+                        odds = prediction['12_odds'] || 'N/A';
+                        break;
+                    case '1X':
+                        odds = prediction['1x_odds'] || 'N/A';
+                        break;
+                    case '2X':
+                        odds = prediction['2x_odds'] || 'N/A';
+                        break;
+                    default:
+                        odds = 'N/A';
+                }
+
+                const oddsParagraph = document.createElement('p');
+                oddsParagraph.innerHTML = `<strong>Odd:</strong> ${odds}`;
+                predictionCard.appendChild(oddsParagraph);
+
+                // Detalhes Adicionais (Data e Status)
+                const detailsDiv = document.createElement('div');
+                detailsDiv.classList.add('details');
+
+                // Formatar a data para um formato mais legível (DD/MM/YYYY HH:MM)
+                const matchDateRaw = prediction.date || 'Data não disponível';
+                const matchDate = formatDate(matchDateRaw);
+
+                const status = prediction.status || 'Status não disponível';
+
+                const dateSpan = document.createElement('span');
+                dateSpan.innerHTML = `<strong>Data:</strong> ${matchDate}`;
+                detailsDiv.appendChild(dateSpan);
+
+                const statusSpan = document.createElement('span');
+                statusSpan.innerHTML = `<strong>Status:</strong> ${status}`;
+                detailsDiv.appendChild(statusSpan);
+
+                predictionCard.appendChild(detailsDiv);
+
+                // Adicionar Resultado da Previsão
+                if (status === 'FT') { // Apenas jogos finalizados
+                    const isPredictionCorrect = verificarPredicaoCorreta(prediction);
+                    const resultadoSpan = document.createElement('span');
+                    resultadoSpan.innerHTML = `<strong>Resultado da Previsão:</strong> ${isPredictionCorrect ? '<span style="color: var(--cor-success);">Correta</span>' : '<span style="color: var(--cor-error);">Incorreta</span>'}`;
+                    detailsDiv.appendChild(resultadoSpan);
+
+                    // Adicionar classe para estilizar o cartão
+                    predictionCard.classList.add(isPredictionCorrect ? 'correct' : 'incorrect');
+                }
+
+                // Adicionar o cartão à seção de resultados
+                resultsSection.appendChild(predictionCard);
+            });
+        }
+
+        /**
+         * Função para formatar a data de "YYYY-MM-DD HH:MM:SS" para "DD/MM/YYYY HH:MM"
+         * @param {string} dateStr - Data no formato "YYYY-MM-DD HH:MM:SS"
+         * @returns {string} - Data formatada como "DD/MM/YYYY HH:MM"
+         */
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Data não disponível';
+            const dateObj = new Date(dateStr);
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Meses são indexados a partir de 0
+            const year = dateObj.getFullYear();
+            const hours = String(dateObj.getHours()).padStart(2, '0');
+            const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+            return `${day}/${month}/${year} ${hours}:${minutes}`;
+        }
+
+        /**
+         * Função para verificar se a previsão foi correta com base no resultado do jogo
+         * @param {Object} prediction - Objeto contendo os dados da previsão
+         * @returns {boolean} - Retorna true se a previsão estiver correta, false caso contrário
+         */
+        function verificarPredicaoCorreta(prediction) {
+            const homeGoals = parseInt(prediction.home_goals, 10);
+            const awayGoals = parseInt(prediction.away_goals, 10);
+            const resultadoReal = homeGoals > awayGoals ? '1' : (homeGoals < awayGoals ? '2' : 'X');
+            const previsao = prediction['1x2'];
+
+            if (previsao === '12') {
+                // Previsão '12' é correta se o jogo não terminou em empate
+                return resultadoReal === '1' || resultadoReal === '2';
+            }
+
+            // Para previsões como '1X', '2X', '1', '2', 'X'
+            if (previsao.includes(resultadoReal)) {
+                return true;
+            }
+
+            return false;
+        }
+
+        // Torna o contêiner do campo de data clicável para abrir o date picker
+        const dateContainer = document.getElementById('date-container');
+        const dateInput = document.getElementById('dateFrom');
+
+        dateContainer.addEventListener('click', (event) => {
+            // Evita que o clique no input interfira
+            if (event.target !== dateInput) {
+                dateInput.focus();
+                dateInput.click();
+            }
+        });
+    });
+</script>
+</body>
+</html>

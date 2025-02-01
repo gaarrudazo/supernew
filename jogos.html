@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto&display=swap" rel="stylesheet">
     <!-- Estilos CSS -->
     <style>
-        /* Reset básico para garantir consistência entre navegadores */
+        /* Reset Básico para Garantir Consistência entre Navegadores */
         * {
             margin: 0;
             padding: 0;
@@ -19,32 +19,37 @@
             font-family: 'Roboto', sans-serif;
         }
 
-        /* Variáveis de cores para facilitar a manutenção e consistência */
+        /* Variáveis de Cores para Facilitar a Manutenção e Consistência */
         :root {
-            --cor-primaria: #1e3a8a; /* Azul escuro */
-            --cor-secundaria: #3b82f6; /* Azul médio */
-            --cor-accent: #10b981; /* Verde */
-            --cor-fundo: #f3f4f6; /* Cinza claro */
-            --cor-texto: #1f2937; /* Cinza escuro */
+            /* Cores da Plataforma de Dicas */
+            --cor-primaria: #10b981; /* Verde */
+            --cor-secundaria: #34d399; /* Verde Claro */
+            --cor-accent: #2563eb; /* Azul Mais Claro */
+            --cor-fundo: #f3f4f6; /* Cinza Claro */
+            --cor-texto: #1f2937; /* Cinza Escuro */
             --cor-branca: #ffffff;
-            --cor-filtro-fundo: #ffffff;
-            --cor-filtro-borda: #d1d5db;
-            --cor-botao-fundo: #3b82f6;
-            --cor-botao-hover: #1e40af;
-            --cor-botao-texto: #ffffff;
-            --cor-botao-secundario-fundo: #e5e7eb;
-            --cor-botao-secundario-texto: #374151;
+            --cor-botao-fundo: var(--cor-primaria);
+            --cor-botao-hover: var(--cor-secundaria);
+            --cor-botao-texto: var(--cor-branca);
+            --cor-error: #ef4444; /* Vermelho para Erros */
+            --cor-success: #10b981; /* Verde para Sucesso */
+
+            /* Cores da Sidebar (Reutilizadas para Consistência) */
+            --color-sidebar-fundo: var(--cor-primaria);
+            --color-sidebar-ativa: var(--cor-secundaria);
+            --color-sidebar-texto: var(--cor-branca);
+            --color-close-btn: var(--cor-branca);
+            --color-menu-btn: #000000; /* Preto */
+            
+            /* Outras Cores */
+            --cor-filtro-fundo: #d1d5db;
+            --cor-cabecalho-fundo: var(--cor-primaria); /* Verde */
+            --cor-cabecalho-sombra: rgba(0, 0, 0, 0.1);
+            --cor-tabela-cabecalho: var(--cor-primaria);
+            --cor-tabela-texto: var(--cor-texto);
+            --cor-tabela-borda: #d1d5db;
             --cor-cartao-borda: #d1d5db;
             --cor-cartao-hover: #e5e7eb;
-            --cor-tabela-cabecalho: #3b82f6;
-            --cor-tabela-texto: #1f2937;
-            --cor-tabela-borda: #d1d5db;
-            --cor-cabecalho-fundo: var(--cor-branca);
-            --cor-cabecalho-sombra: rgba(0, 0, 0, 0.1);
-            --cor-sidebar-fundo: var(--cor-primaria);
-            --cor-sidebar-ativa: var(--cor-secundaria);
-            --cor-sucesso-borda: #10b981; /* Verde para acerto */
-            --cor-erro-borda: #ef4444; /* Vermelho para erro */
         }
 
         /* Estilos para a Sidebar */
@@ -54,8 +59,8 @@
             left: 0;
             width: 220px; /* Largura da sidebar */
             height: 100%;
-            background-color: var(--cor-sidebar-fundo);
-            color: var(--cor-branca);
+            background-color: var(--color-sidebar-fundo);
+            color: var(--color-sidebar-texto);
             display: flex;
             flex-direction: column;
             transition: transform 0.3s ease-in-out;
@@ -67,8 +72,8 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-            background-color: var(--cor-sidebar-ativa);
-            border-bottom: 1px solid var(--cor-filtro-borda); /* Borda sutil */
+            background-color: var(--color-sidebar-ativa);
+            border-bottom: 1px solid var(--cor-filtro-fundo); /* Borda sutil */
         }
 
         .logo {
@@ -82,7 +87,7 @@
         .close-btn {
             background: none;
             border: none;
-            color: var(--cor-branca);
+            color: var(--color-close-btn);
             font-size: 1.2rem;
             cursor: pointer;
             display: none; /* Esconder em desktop */
@@ -105,7 +110,7 @@
             display: flex;
             align-items: center;
             padding: 12px 20px;
-            color: var(--cor-branca);
+            color: var(--color-sidebar-texto);
             text-decoration: none;
             transition: background 0.2s, border 0.2s;
             border-radius: 4px;
@@ -115,7 +120,7 @@
         }
 
         .sidebar-nav a:hover {
-            background-color: var(--cor-sidebar-ativa);
+            background-color: var(--color-sidebar-ativa);
             border: 1px solid var(--cor-secundaria); /* Borda sutil no hover */
         }
 
@@ -143,26 +148,25 @@
             min-height: 100vh;
             background-color: var(--cor-fundo);
             transition: margin-left 0.3s ease-in-out;
-            padding: 40px 20px 20px 20px; /* Adicionado padding-top para espaçamento */
+            padding: 0 20px 20px 20px; /* Reduzido padding-top para 0 */
             overflow-y: auto;
         }
 
         /* Cabeçalho */
         .header {
-            height: 70px; /* Aumento da altura para acomodar novos elementos */
-            background-color: var(--cor-cabecalho-fundo);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            box-shadow: 0 2px 4px var(--cor-cabecalho-sombra);
+            background-color: var(--cor-cabecalho-fundo); /* Verde */
+            color: var(--cor-branca);
+            padding: 10px 30px; /* Reduzido o padding para subir o cabeçalho */
+            text-align: center;
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid var(--cor-filtro-borda); /* Borda sutil */
-            flex-shrink: 0; /* Evitar encolhimento */
-            flex-wrap: wrap; /* Permitir que os elementos envolvam */
-            position: relative; /* Para posicionamento absoluto do menu button */
+            box-shadow: 0 2px 4px var(--cor-cabecalho-sombra);
+            border-bottom: 1px solid var(--cor-filtro-fundo); /* Borda sutil */
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Botão de Menu para Mobile */
@@ -170,33 +174,33 @@
             display: none; /* Esconder em desktop */
             background: none;
             border: none;
-            color: var(--cor-texto);
+            color: var(--color-menu-btn); /* Preto */
             font-size: 1.5rem;
             cursor: pointer;
             position: absolute; /* Posicionar absoluto */
             left: 20px; /* Alinhar à esquerda */
-            top: 50%;
-            transform: translateY(-50%);
+            top: 10px; /* Mais para cima */
+            /* Removido transform */
         }
 
         /* Logo no Cabeçalho */
         .header-logo {
             display: flex;
             align-items: center;
-            flex: 1 1 200px; /* Flex-grow, flex-shrink, flex-basis */
-            justify-content: flex-start; /* Alinhar à esquerda no desktop */
+            justify-content: center; /* Centralizar o logo */
+            flex: 1;
         }
 
         .header-logo a {
             display: flex;
             align-items: center;
             text-decoration: none;
-            color: var(--cor-primaria);
+            color: var(--cor-branca);
         }
 
         .logo-text {
             font-family: 'Montserrat', sans-serif;
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
         }
 
@@ -208,13 +212,11 @@
 
             .main-content {
                 margin-left: 180px;
-                padding: 40px 15px 15px 15px; /* Ajuste de padding para responsividade */
+                padding: 0 15px 15px 15px; /* Ajuste de padding para responsividade */
             }
 
             .header {
-                padding: 0 20px;
-                height: 100px; /* Manter altura fixa */
-                flex-wrap: wrap; /* Permitir quebra de linha */
+                padding: 10px 20px; /* Ajuste de padding */
             }
         }
 
@@ -246,8 +248,9 @@
                 display: block;
                 position: absolute; /* Posicionar absoluto */
                 left: 20px; /* Alinhar à esquerda */
-                top: 20px; /* Ajuste para evitar sobreposição com o header */
+                top: 10px; /* Mais para cima */
                 transform: none; /* Remover a tradução vertical */
+                color: #000000; /* Preto */
             }
 
             /* Remover o logo na versão mobile */
@@ -271,8 +274,11 @@
             justify-content: center;
             font-size: 0.9rem;
             margin-top: auto;
-            border-top: 1px solid var(--cor-filtro-borda); /* Borda sutil */
+            border-top: 1px solid var(--cor-filtro-fundo); /* Borda sutil */
         }
+
+        /* Outros Estilos (se necessário) */
+        /* Adicione aqui quaisquer outros estilos específicos que precisar */
     </style>
 
     <!-- Favicon vazio para evitar erro 404 -->
@@ -290,15 +296,9 @@
         <nav class="sidebar-nav">
             <ul>
                 <li>
-                    <a href="index2.html" aria-label="Home">
+                    <a href="index3.html" aria-label="Home">
                         <i class="fas fa-home"></i>
                         Home
-                    </a>
-                </li>
-                <li>
-                    <a href="analise.html" aria-label="Análises">
-                        <i class="fas fa-chart-bar"></i>
-                        Análises
                     </a>
                 </li>
                 <li>
@@ -342,7 +342,7 @@
             </button>
             <!-- Logo no Cabeçalho -->
             <div class="header-logo">
-                <a href="index2.html" aria-label="SuperPro Home">
+                <a href="index3.html" aria-label="SuperPro Home">
                     <span class="logo-text">SuperPro</span>
                 </a>
             </div>

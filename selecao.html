@@ -5,13 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minhas Seleções - SuperPro</title>
-    <!-- Link para ícones (Font Awesome) -->
+    <!-- Link para Font Awesome (para ícones) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Link para Google Fonts (Roboto e Montserrat para o título) -->
+    <!-- Link para Google Fonts (opcional) -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto&display=swap" rel="stylesheet">
+    <!-- Favicon Vazio para Evitar Erro 404 -->
+    <link rel="icon" href="data:,">
     <!-- Estilos CSS -->
     <style>
-        /* Reset básico para garantir consistência entre navegadores */
+        /* Reset Básico para Garantir Consistência entre Navegadores */
         * {
             margin: 0;
             padding: 0;
@@ -19,32 +21,27 @@
             font-family: 'Roboto', sans-serif;
         }
 
-        /* Variáveis de cores para facilitar a manutenção e consistência */
+        /* Variáveis de Cores para Facilitar a Manutenção e Consistência */
         :root {
-            --cor-primaria: #1e3a8a; /* Azul escuro */
-            --cor-secundaria: #3b82f6; /* Azul médio */
-            --cor-accent: #10b981; /* Verde */
-            --cor-fundo: #f3f4f6; /* Cinza claro */
-            --cor-texto: #1f2937; /* Cinza escuro */
+            /* Cores da Plataforma de Dicas */
+            --cor-primaria: #10b981; /* Verde */
+            --cor-secundaria: #34d399; /* Verde Claro */
+            --cor-accent: #2563eb; /* Azul Mais Claro */
+            --cor-fundo: #f3f4f6; /* Cinza Claro */
+            --cor-texto: #1f2937; /* Cinza Escuro */
             --cor-branca: #ffffff;
-            --cor-filtro-fundo: #ffffff;
-            --cor-filtro-borda: #d1d5db;
-            --cor-botao-fundo: #3b82f6;
-            --cor-botao-hover: #1e40af;
-            --cor-botao-texto: #ffffff;
-            --cor-botao-secundario-fundo: #e5e7eb;
-            --cor-botao-secundario-texto: #374151;
-            --cor-cartao-borda: #d1d5db;
-            --cor-cartao-hover: #e5e7eb;
-            --cor-tabela-cabecalho: #3b82f6;
-            --cor-tabela-texto: #1f2937;
-            --cor-tabela-borda: #d1d5db;
-            --cor-cabecalho-fundo: var(--cor-branca);
-            --cor-cabecalho-sombra: rgba(0, 0, 0, 0.1);
-            --cor-sidebar-fundo: var(--cor-primaria);
-            --cor-sidebar-ativa: var(--cor-secundaria);
-            --cor-sucesso-borda: #10b981; /* Verde para acerto */
-            --cor-erro-borda: #ef4444; /* Vermelho para erro */
+            --cor-botao-fundo: var(--cor-primaria);
+            --cor-botao-hover: var(--cor-secundaria);
+            --cor-botao-texto: var(--cor-branca);
+            --cor-error: #ef4444; /* Vermelho para Erros */
+            --cor-success: #10b981; /* Verde para Sucesso */
+
+            /* Cores da Sidebar (Reutilizadas para Consistência) */
+            --color-sidebar-fundo: var(--cor-primaria);
+            --color-sidebar-ativa: var(--cor-secundaria);
+            --color-sidebar-texto: var(--cor-branca);
+            --color-close-btn: var(--cor-branca);
+            --color-menu-btn: var(--cor-branca);
         }
 
         /* Estilos para a Sidebar */
@@ -54,8 +51,8 @@
             left: 0;
             width: 220px; /* Largura da sidebar */
             height: 100%;
-            background-color: var(--cor-sidebar-fundo);
-            color: var(--cor-branca);
+            background-color: var(--color-sidebar-fundo);
+            color: var(--color-sidebar-texto);
             display: flex;
             flex-direction: column;
             transition: transform 0.3s ease-in-out;
@@ -67,8 +64,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-            background-color: var(--cor-sidebar-ativa);
-            border-bottom: 1px solid var(--cor-filtro-borda); /* Borda sutil */
+            background-color: var(--color-sidebar-ativa);
         }
 
         .logo {
@@ -82,7 +78,7 @@
         .close-btn {
             background: none;
             border: none;
-            color: var(--cor-branca);
+            color: var(--color-close-btn);
             font-size: 1.2rem;
             cursor: pointer;
             display: none; /* Esconder em desktop */
@@ -105,18 +101,15 @@
             display: flex;
             align-items: center;
             padding: 12px 20px;
-            color: var(--cor-branca);
+            color: var(--color-sidebar-texto);
             text-decoration: none;
-            transition: background 0.2s, border 0.2s;
+            transition: background 0.2s;
             border-radius: 4px;
             font-size: 1rem;
-            border: 1px solid transparent; /* Borda transparente para manter o alinhamento */
-            flex-shrink: 0;
         }
 
         .sidebar-nav a:hover {
-            background-color: var(--cor-sidebar-ativa);
-            border: 1px solid var(--cor-secundaria); /* Borda sutil no hover */
+            background-color: var(--color-sidebar-ativa);
         }
 
         .sidebar-nav i {
@@ -140,7 +133,7 @@
             margin-left: 220px; /* Ajustar conforme a largura da sidebar */
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh;
             background-color: var(--cor-fundo);
             transition: margin-left 0.3s ease-in-out;
             padding: 20px; /* Adicionar padding para não ficar grudado nas bordas */
@@ -148,210 +141,131 @@
         }
 
         /* Cabeçalho */
-        .header {
-            height: 100px; /* Aumento da altura para 100px */
-            background-color: var(--cor-cabecalho-fundo);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            box-shadow: 0 2px 4px var(--cor-cabecalho-sombra);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--cor-filtro-borda); /* Borda sutil */
-            flex-shrink: 0; /* Evitar encolhimento */
-            flex-wrap: wrap; /* Permitir que os elementos envolvam */
-            position: relative; /* Para posicionamento absoluto do menu button */
+        header {
+            background-color: var(--cor-primaria);
+            color: var(--cor-branca);
+            padding: 20px;
+            text-align: center;
+            position: relative; /* Para posicionamento absoluto do botão de menu */
+        }
+
+        header h1 {
+            font-size: 2rem;
         }
 
         /* Botão de Menu para Mobile */
         .menu-btn {
-            display: none; /* Esconder em desktop */
+            position: absolute;
+            left: 20px; /* Posicionado dentro da tela */
+            top: 20px;
             background: none;
             border: none;
-            color: var(--cor-texto);
+            color: var(--color-menu-btn);
             font-size: 1.5rem;
             cursor: pointer;
-            position: absolute; /* Posicionar absoluto */
-            left: 20px; /* Alinhar à esquerda */
-            top: 50%;
-            transform: translateY(-50%);
+            display: none; /* Esconder em desktop */
         }
 
-        /* Logo no Cabeçalho */
-        .header-logo {
-            display: flex;
-            align-items: center;
-            flex: 1 1 200px; /* Flex-grow, flex-shrink, flex-basis */
-            justify-content: flex-start; /* Alinhar à esquerda no desktop */
-        }
-
-        .header-logo a {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: var(--cor-primaria);
-        }
-
-        .logo-text {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        /* Barra de Busca */
-        .search-bar {
-            display: flex;
-            align-items: center;
-            flex: 2 1 300px; /* Flex-grow, flex-shrink, flex-basis */
-            max-width: 400px; /* Aumentar para mais espaço */
-            margin: 0 30px;
-            width: 100%; /* Garantir que ocupe a largura disponível */
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 5px 12px; /* Aumentado para 32px de altura */
-            border: 1px solid var(--cor-filtro-borda);
-            border-right: none;
-            border-radius: 4px 0 0 4px;
-            outline: none;
-            font-size: 0.9rem; /* Aumentado para 0.9rem */
-            color: var(--cor-texto);
-            height: 32px; /* Definido para controlar a altura */
-        }
-
-        .search-bar button {
-            padding: 5px 12px; /* Aumentado para 32px de altura */
-            border: 1px solid transparent; /* Borda transparente para manter o alinhamento */
-            background-color: var(--cor-botao-fundo);
-            color: var(--cor-botao-texto);
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-            transition: background-color 0.3s, border 0.3s;
-            font-size: 0.9rem; /* Aumentado para 0.9rem */
-            height: 32px; /* Definido para controlar a altura */
-        }
-
-        .search-bar button:hover {
-            background-color: var(--cor-botao-hover);
-            border: 1px solid var(--cor-secundaria); /* Borda sutil no hover */
-        }
-
-        /* Cards */
-        .analysis-card {
-            background-color: var(--cor-branca);
+        /* Seção de Seleções */
+        .selection-section {
             padding: 20px;
-            border-radius: 12px; /* Aumento do border-radius */
-            border: 1px solid var(--cor-cartao-borda); /* Reduzido de 2px para 1px */
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Melhoria na sombra */
+            background-color: var(--cor-branca);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
             margin-bottom: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .analysis-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        .results-section {
+            /* Pode adicionar estilos específicos se necessário */
         }
 
-        /* Classes para indicar resultado */
-        .analysis-card.resultado-ganhou {
-            border-color: var(--cor-sucesso-borda);
-            background-color: rgba(16, 185, 129, 0.05); /* Verde claro */
+        /* Cartão de Seleção */
+        .selection-card {
+            background-color: var(--cor-branca);
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: relative; /* Para posicionar o botão de remoção */
         }
 
-        .analysis-card.resultado-perdeu {
-            border-color: var(--cor-erro-borda);
-            background-color: rgba(239, 68, 68, 0.05); /* Vermelho claro */
-        }
-
-        .analysis-card h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.6rem;
+        .selection-card h2 {
+            font-size: 1.5rem;
             color: var(--cor-texto);
             margin-bottom: 10px;
         }
 
-        .analysis-card p {
+        .selection-card p {
+            margin-bottom: 8px;
             color: #4b5563;
-            margin-bottom: 10px;
-            line-height: 1.6;
         }
 
-        .card-footer {
-            font-size: 0.9rem;
-            color: #6b7280;
+        .selection-card .details {
             display: flex;
             justify-content: space-between;
-            margin-top: 15px;
-        }
-
-        /* Botões Remover */
-        .card-actions {
-            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
-            margin-top: 10px;
         }
 
-        .card-actions button {
-            background: none;
-            border: 1px solid var(--cor-primaria); /* Adicionado borda para consistência */
-            color: var(--cor-primaria);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
+        .selection-card .details span {
             font-size: 0.9rem;
-            transition: color 0.3s, background-color 0.3s, border-color 0.3s;
-            padding: 5px 10px; /* Ajustado para harmonizar com a barra de busca */
+            color: #6b7280;
+        }
+
+        .selection-card.correct {
+            border-left: 5px solid var(--cor-success);
+        }
+
+        .selection-card.incorrect {
+            border-left: 5px solid var(--cor-error);
+        }
+
+        /* Botão de Remoção Ajustado */
+        .remove-button {
+            background-color: #f87171; /* Novo tom de vermelho mais suave */
+            color: var(--cor-branca);
+            border: none;
+            padding: 6px 10px; /* Redução do tamanho do padding */
             border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem; /* Redução do tamanho da fonte */
+            transition: background-color 0.3s;
+            position: absolute;
+            top: 15px;
+            right: 15px;
         }
 
-        .card-actions button:hover {
-            color: var(--cor-secundaria);
-            background-color: var(--cor-cartao-hover);
-            border-color: var(--cor-secundaria); /* Mudança da cor da borda no hover */
+        .remove-button:hover {
+            background-color: #dc2626; /* Vermelho mais escuro no hover */
         }
 
-        .card-actions button i {
-            margin-right: 5px;
-        }
-
-        /* Footer */
-        .footer {
-            height: 40px; /* Redução da altura do rodapé */
+        /* Rodapé */
+        footer {
             background-color: var(--cor-primaria);
             color: var(--cor-branca);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            text-align: center;
+            padding: 10px;
             font-size: 0.9rem;
-            margin-top: auto;
-            border-top: 1px solid var(--cor-filtro-borda); /* Borda sutil */
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        /* Mensagens de Erro */
+        .error {
+            color: var(--cor-error);
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Mensagens de Sucesso */
+        .success {
+            color: var(--cor-success);
+            text-align: center;
+            margin-top: 20px;
         }
 
         /* Responsividade */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 180px;
-            }
-
-            .main-content {
-                margin-left: 180px;
-            }
-
-            .header {
-                padding: 0 20px;
-                height: 100px; /* Manter altura fixa */
-                flex-wrap: wrap; /* Permitir quebra de linha */
-            }
-
-            .search-bar {
-                margin: 10px 0; /* Adicionado margem vertical */
-                max-width: 250px; /* Ajuste para telas menores */
-            }
-        }
-
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -370,44 +284,33 @@
                 display: block;
             }
 
+            .menu-btn {
+                display: block;
+                left: 20px; /* Ajustado para estar dentro da tela */
+            }
+
             .main-content {
                 margin-left: 0;
             }
 
-            .feed {
+            .selection-section {
+                padding: 15px;
+            }
+
+            .selection-card {
                 padding: 10px;
             }
 
-            /* Ocultar a barra de busca */
-            .search-bar {
-                display: none;
+            /* Mover o botão de remover para o final */
+            .selection-card .details {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
-            /* Botão de Menu visível apenas em mobile */
-            .menu-btn {
-                display: block;
-                position: absolute; /* Posicionar absoluto */
-                left: 20px; /* Alinhar à esquerda */
-                top: 50%;
-                transform: translateY(-50%);
-            }
-
-            /* Centralizar o logo */
-            .header-logo {
-                justify-content: center; /* Centralizar o logo */
-                flex: 1;
-            }
-
-            /* Ajustar layout da barra de busca para mobile */
-            .search-bar {
-                display: none; /* Garantir que a barra de busca esteja oculta */
-            }
-        }
-
-        /* Adição de espaçamento entre o cabeçalho e as dicas para telas maiores */
-        @media (min-width: 769px) {
-            .feed {
-                margin-top: 30px; /* Ajuste conforme necessário */
+            .remove-button {
+                position: static; /* Remove o posicionamento absoluto */
+                align-self: flex-end;
+                margin-top: 10px;
             }
         }
     </style>
@@ -424,17 +327,12 @@
         <nav class="sidebar-nav">
             <ul>
                 <li>
-                    <a href="index2.html" aria-label="Home">
+                    <a href="index3.html" aria-label="Home">
                         <i class="fas fa-home"></i>
                         Home
                     </a>
                 </li>
-                <li>
-                    <a href="analise.html" aria-label="Análises">
-                        <i class="fas fa-chart-bar"></i>
-                        Análises
-                    </a>
-                </li>
+                <!-- Removida a seção de Análises conforme solicitado -->
                 <li>
                     <a href="jogos.html" aria-label="Explorar">
                         <i class="fas fa-compass"></i>
@@ -454,7 +352,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="logout-btn" aria-label="Sair">
+                    <a href="#" class="logout-btn" id="logout-btn" aria-label="Sair">
                         <i class="fas fa-sign-out-alt"></i>
                         Sair
                     </a>
@@ -468,38 +366,24 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Header -->
-        <header class="header">
-            <!-- Botão de Menu para Mobile -->
-            <button class="menu-btn" id="menu-btn" aria-label="Abrir Menu">
+        <!-- Cabeçalho -->
+        <header>
+            <button class="menu-btn" id="menu-btn" aria-label="Abrir Sidebar">
                 <i class="fas fa-bars"></i>
             </button>
-
-            <!-- Logo no Cabeçalho -->
-            <div class="header-logo">
-                <a href="index2.html" aria-label="SuperPro Home">
-                    <span class="logo-text">SuperPro</span>
-                </a>
-            </div>
-            <!-- Barra de Busca -->
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Buscar análises ou tipsters..." aria-label="Buscar">
-                <button id="search-btn" aria-label="Buscar">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-         
+            <h1>Minhas Seleções</h1>
         </header>
 
-        <!-- Feed de Seleções -->
-        <main class="feed" id="feed">
-            <!-- As seleções serão inseridas aqui dinamicamente -->
-            <div id="selecoes-container"></div>
-        </main>
+        <!-- Seção de Seleções -->
+        <section class="selection-section">
+            <div class="results-section" id="selections">
+                <!-- As seleções serão exibidas aqui -->
+            </div>
+        </section>
 
-        <!-- Footer -->
-        <footer class="footer">
-            © 2025 SuperPro. Todos os direitos reservados.
+        <!-- Rodapé -->
+        <footer>
+            <p>© 2025 Plataforma de Dicas de Apostas Esportivas. Todos os direitos reservados.</p>
         </footer>
     </div>
 
@@ -510,12 +394,11 @@
         import { 
             getFirestore, 
             collection, 
-            doc, 
             getDocs, 
-            setDoc, 
             deleteDoc, 
-            getDoc, 
-            serverTimestamp
+            doc, 
+            query, 
+            where 
         } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         import { 
             getAuth, 
@@ -535,299 +418,258 @@
 
         // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
-        const bancoDeDados = getFirestore(app);
-        const autenticacao = getAuth(app);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-        // Variáveis para armazenamento de dados
-        let dicasSelecionadas = [];
+        // Elementos do DOM
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('close-btn');
+        const menuBtn = document.getElementById('menu-btn');
+        const overlay = document.getElementById('overlay');
+        const logoutBtn = document.getElementById('logout-btn');
+        const selectionsSection = document.getElementById('selections');
 
-        // ------------------- FORMATAR PRIMEIRA LETRA -------------------
-        const capitalizeFirstLetter = (string) => {
-            if (typeof string !== 'string') return '';
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        };
-
-        // ------------------- INICIALIZAR ESTRUTURA DO FIRESTORE -------------------
-        const inicializarEstruturaDoFirestore = async (usuario) => {
-            if (!usuario) return;
-
-            const idDoUsuario = usuario.uid;
-            const referenciaDoUsuario = doc(bancoDeDados, 'users', idDoUsuario);
-            const documentoDoUsuario = await getDoc(referenciaDoUsuario);
-
-            if (!documentoDoUsuario.exists()) {
-                // Criar documento de usuário se não existir
-                await setDoc(referenciaDoUsuario, {
-                    email: usuario.email,
-                    criadoEm: serverTimestamp()
-                    // Adicione outros campos necessários aqui
-                });
-                console.log(`Documento de usuário criado para UID: ${idDoUsuario}`);
-            } else {
-                console.log(`Documento de usuário já existe para UID: ${idDoUsuario}`);
-            }
-        };
-
-        // ------------------- BUSCAR E PROCESSAR CSV -------------------
-        const urlDaPlanilha = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTWlGNMaJfx6YMl0NaV2SIfCCKXxnP4Z51nXI62n0pG-qhHfQsHldYN4eYOtxanC2h2NzyzIfAHH8ax/pub?output=csv';
-
-        const buscarEProcessarCSV = () => {
-            fetch(urlDaPlanilha)
-                .then(resposta => {
-                    if (!resposta.ok) {
-                        throw new Error(`Erro na requisição: ${resposta.status}`);
-                    }
-                    return resposta.text();
-                })
-                .then(textoCSV => {
-                    const dadosProcessados = processarCSV(textoCSV);
-                    console.log('Resultados do CSV:', dadosProcessados);
-                    renderizarSelecoesAPartirDoCSV(dadosProcessados);
-                })
-                .catch(erro => {
-                    console.error('Erro ao buscar ou processar o CSV:', erro);
-                    // Removido o alert para uma experiência mais suave
-                    const container = document.getElementById('selecoes-container');
-                    if (container) {
-                        container.innerHTML = '<p>Ocorreu um erro ao carregar as dicas. Por favor, tente novamente.</p>';
-                    }
-                });
-        };
-
-        // ------------------- PARSE MANUAL DO CSV -------------------
-        const processarCSV = (textoCSV) => {
-            const linhas = textoCSV.trim().split('\n');
-            const cabecalhos = linhas[0].split(',');
-
-            const resultado = [];
-
-            for (let i = 1; i < linhas.length; i++) {
-                const objeto = {};
-                const linhaAtual = linhas[i].split(',');
-
-                for (let j = 0; j < cabecalhos.length; j++) {
-                    // Remove possíveis aspas e espaços
-                    const cabecalho = cabecalhos[j].trim().replace(/^"|"$/g, '');
-                    const valor = linhaAtual[j] ? linhaAtual[j].trim().replace(/^"|"$/g, '') : '';
-                    objeto[cabecalho] = valor;
-                }
-
-                resultado.push(objeto);
-            }
-
-            return resultado;
-        };
-
-        // ------------------- RENDERIZAR SELEÇÕES A PARTIR DO CSV -------------------
-        const renderizarSelecoesAPartirDoCSV = async (dicas) => {
-            const container = document.getElementById('selecoes-container');
-            if (!container) return;
-            container.innerHTML = '';
-
-            // Verificar se o usuário está autenticado
-            const usuario = autenticacao.currentUser;
-            if (!usuario) {
-                container.innerHTML = '<p>Por favor, faça login para ver suas seleções.</p>';
-                return;
-            }
-
-            const idDoUsuario = usuario.uid;
-
-            // Obter as seleções do usuário
-            const referenciaDasSelecoes = collection(bancoDeDados, 'users', idDoUsuario, 'selecoes');
-            const snapshotDasSelecoes = await getDocs(referenciaDasSelecoes);
-
-            if (snapshotDasSelecoes.empty) {
-                container.innerHTML = '<p>Você ainda não selecionou nenhuma dica.</p>';
-                return;
-            }
-
-            const idsDasDicasSelecionadas = [];
-            snapshotDasSelecoes.forEach((documentSnapshot) => {
-                idsDasDicasSelecionadas.push(documentSnapshot.id);
-            });
-
-            console.log(`Dicas selecionadas: ${idsDasDicasSelecionadas.join(', ')}`);
-
-            // Filtrar as dicas do CSV que estão nas seleções do usuário
-            const dicasFiltradas = dicas.filter(dica => idsDasDicasSelecionadas.includes(dica.ID));
-
-            if (dicasFiltradas.length === 0) {
-                container.innerHTML = '<p>Você ainda não selecionou nenhuma dica válida.</p>';
-                return;
-            }
-
-            dicasSelecionadas = dicasFiltradas; // Atualizar a variável global para uso posterior
-
-            dicasFiltradas.forEach(dica => {
-                console.log('Dica:', dica); // Para depuração
-
-                // Acessando os campos com os nomes corretos
-                const titulo = dica['Título da Dica'] || 'Título não disponível';
-                const conteudo = dica['Conteúdo da Dica'] || 'Conteúdo não disponível';
-                const odd = dica['Odd'] !== undefined ? dica['Odd'] : 0;
-                const resultado = dica['Resultado'] ? dica['Resultado'].toLowerCase().trim() : '';
-                const autor = dica['Autor'] || 'Autor não disponível';
-                const data = dica['Data'] || 'Data não disponível';
-
-                // Determinar a classe de resultado para a borda
-                let classeDoResultado = '';
-                if (resultado === 'ganhou') {
-                    classeDoResultado = 'resultado-ganhou';
-                } else if (resultado === 'perdeu') {
-                    classeDoResultado = 'resultado-perdeu';
-                }
-
-                // Criar o card
-                const card = document.createElement('div');
-                card.classList.add('analysis-card'); // Sempre adicionar 'analysis-card'
-                if (classeDoResultado !== '') {
-                    card.classList.add(classeDoResultado); // Adicionar 'resultado-ganhou' ou 'resultado-perdeu' somente se não estiver vazio
-                }
-
-                // Verificar se os campos estão sendo preenchidos corretamente
-                console.log(`Título: ${titulo}`);
-                console.log(`Conteúdo: ${conteudo}`);
-                console.log(`Odd: ${odd}`);
-                console.log(`Autor: ${autor}`);
-                console.log(`Data: ${data}`);
-                console.log(`Resultado: ${resultado}`);
-
-                card.innerHTML = `
-                    <h2>${titulo}</h2>
-                    <p>${conteudo}</p>
-                    <p><strong>Odd:</strong> ${odd}</p>
-                    <p><strong>Resultado:</strong> ${capitalizeFirstLetter(resultado)}</p>
-                    <div class="card-footer">
-                        <span><strong>Tipster:</strong> ${autor}</span>
-                        <span><strong>Publicado em:</strong> ${formatarData(data)}</span>
-                    </div>
-                    <div class="card-actions">
-                        <button onclick="removerSelecao('${dica.ID}')" id="remove-btn-${dica.ID}">
-                            <i class="fas fa-minus"></i> Remover
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        };
-
-        // ------------------- FORMATAR DATA -------------------
-        const formatarData = (stringData) => {
-            if (!stringData) return 'Data inválida';
-            const partes = stringData.split('/');
-            if (partes.length !== 3) return stringData;
-            const [dia, mes, ano] = partes;
-            return `${dia}/${mes}/${ano}`;
-        };
-
-        // ------------------- FUNÇÕES DE REMOVER SELEÇÃO -------------------
-        window.removerSelecao = async (idDaDica) => {
-            const usuario = autenticacao.currentUser;
-            if (!usuario) {
-                alert("Por favor, faça login para remover seleções.");
-                return;
-            }
-
-            const idDoUsuario = usuario.uid;
-            const referenciaDaSelecao = doc(bancoDeDados, 'users', idDoUsuario, 'selecoes', idDaDica);
-
-            try {
-                await deleteDoc(referenciaDaSelecao);
-                // Recarregar as seleções
-                buscarEProcessarCSV();
-                // Removido o alert para uma experiência mais suave
-                console.log(`Dica ID: ${idDaDica} removida das seleções.`);
-            } catch (erro) {
-                console.error('Erro ao remover seleção:', erro);
-                alert("Ocorreu um erro ao remover sua seleção. Por favor, tente novamente.");
-            }
-        };
-
-        // ------------------- AUTENTICAÇÃO -------------------
-        // Atualizar UI com base no estado de autenticação
-        const atualizarInterfaceAutenticacao = (usuario) => {
-            const botoesDeLogout = document.querySelectorAll('.logout-btn');
-            botoesDeLogout.forEach(btn => {
-                if (usuario) {
-                    btn.textContent = "Sair";
-                    btn.href = "#";
-                    btn.onclick = async (evento) => {
-                        evento.preventDefault();
-                        await efetuarLogout();
-                    };
-                } else {
-                    btn.textContent = "Login";
-                    btn.href = "index.html"; // Redirecionar para a página de login (index.html)
-                }
-            });
-        };
-
-        // Função para efetuar logout
-        const efetuarLogout = async () => {
-            try {
-                await signOut(autenticacao);
-                // Removido o alert para uma experiência mais suave
-                console.log("Usuário deslogado.");
-                window.location.href = 'index.html'; // Redireciona para index.html após logout
-            } catch (erro) {
-                console.error('Erro ao fazer logout:', erro);
-                alert("Ocorreu um erro ao fazer logout. Por favor, tente novamente.");
-            }
-        };
-
-        // Listener para mudanças no estado de autenticação
-        onAuthStateChanged(autenticacao, async (usuario) => {
-            console.log('onAuthStateChanged chamado. Usuário:', usuario);
-            if (usuario) {
-                console.log(`Usuário autenticado: ${usuario.uid}`);
-                await inicializarEstruturaDoFirestore(usuario);
-                // Carregar seleções somente após o usuário estar autenticado
-                buscarEProcessarCSV();
-            } else {
-                console.log('Nenhum usuário autenticado');
-                const container = document.getElementById('selecoes-container');
-                if (container) {
-                    container.innerHTML = '<p>Por favor, faça login para ver suas seleções.</p>';
-                }
-            }
-            atualizarInterfaceAutenticacao(usuario);
+        // Eventos para abrir e fechar a sidebar
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
         });
 
-        // ------------------- INICIALIZAÇÃO -------------------
-        const inicializarPagina = () => {
-            // Sidebar toggle para mobile
-            const botaoMenu = document.getElementById('menu-btn');
-            const botaoFechar = document.getElementById('close-btn');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
+        closeBtn.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
 
-            if (botaoMenu) {
-                botaoMenu.addEventListener('click', () => {
-                    sidebar.classList.add('active');
-                    overlay.classList.add('active');
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Evento de logout
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await signOut(auth);
+                // Redirecionar para a página de login ou inicial após logout
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Erro ao deslogar:', error);
+                // Opcional: Exibir mensagem de erro no frontend
+                alert('Ocorreu um erro ao sair. Por favor, tente novamente.');
+            }
+        });
+
+        // Monitorar o estado de autenticação do usuário
+        let currentUser = null;
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                console.log('Usuário autenticado:', user);
+                await carregarSelecoes();
+            } else {
+                console.log('Nenhum usuário autenticado.');
+                // Redirecionar para a página de login se o usuário não estiver autenticado
+                window.location.href = 'login.html';
+            }
+        });
+
+        /**
+         * Função para carregar as seleções do usuário do Firestore
+         */
+        async function carregarSelecoes() {
+            if (!currentUser) return;
+
+            try {
+                const selecaoRef = collection(db, 'users', currentUser.uid, 'selecoes');
+                const selecaoSnapshot = await getDocs(selecaoRef);
+
+                if (selecaoSnapshot.empty) {
+                    selectionsSection.innerHTML = '<p>Nenhuma seleção realizada ainda.</p>';
+                    return;
+                }
+
+                selectionsSection.innerHTML = ''; // Limpar quaisquer seleções existentes
+
+                selecaoSnapshot.forEach(docSnapshot => {
+                    const selection = docSnapshot.data();
+                    const selectionId = docSnapshot.id;
+
+                    // Criar o cartão da seleção
+                    const selectionCard = document.createElement('div');
+                    selectionCard.classList.add('selection-card');
+
+                    // Título da Dica (Liga e Times)
+                    const league = selection.league || 'Liga Desconhecida';
+                    const homeTeam = selection.homeTeam || 'Time Local';
+                    const awayTeam = selection.awayTeam || 'Time Visitante';
+                    const titleText = `${league} - ${homeTeam} vs ${awayTeam}`;
+                    const titleElement = document.createElement('h2');
+                    titleElement.textContent = titleText;
+                    selectionCard.appendChild(titleElement);
+
+                    // Previsão da Dica
+                    let predictionText = 'Previsão não disponível';
+                    switch(selection.prediction) {
+                        case '1':
+                            predictionText = 'Vitória do Time da Casa';
+                            break;
+                        case '2':
+                            predictionText = 'Vitória do Time Visitante';
+                            break;
+                        case 'X':
+                            predictionText = 'Empate';
+                            break;
+                        case '12':
+                            predictionText = 'Vitória de Qualquer Time';
+                            break;
+                        case '1X':
+                            predictionText = 'Vitória do Time da Casa ou Empate';
+                            break;
+                        case '2X':
+                            predictionText = 'Vitória do Time Visitante ou Empate';
+                            break;
+                        default:
+                            predictionText = 'Previsão não disponível';
+                    }
+
+                    const predictionParagraph = document.createElement('p');
+                    predictionParagraph.innerHTML = `<strong>Previsão:</strong> ${predictionText}`;
+                    selectionCard.appendChild(predictionParagraph);
+
+                    // Odd da Dica
+                    const odds = selection.odds || 'N/A';
+
+                    const oddsParagraph = document.createElement('p');
+                    oddsParagraph.innerHTML = `<strong>Odd:</strong> ${odds}`;
+                    selectionCard.appendChild(oddsParagraph);
+
+                    // Detalhes Adicionais (Data e Status)
+                    const detailsDiv = document.createElement('div');
+                    detailsDiv.classList.add('details');
+
+                    // Formatar a data para um formato mais legível (DD/MM/YYYY HH:MM)
+                    const matchDate = formatDate(selection.date);
+
+                    const status = selection.status || 'Status não disponível';
+
+                    const dateSpan = document.createElement('span');
+                    dateSpan.innerHTML = `<strong>Data:</strong> ${matchDate}`;
+                    detailsDiv.appendChild(dateSpan);
+
+                    const statusSpan = document.createElement('span');
+                    statusSpan.innerHTML = `<strong>Status:</strong> ${status}`;
+                    detailsDiv.appendChild(statusSpan);
+
+                    // Adicionar o botão de remoção
+                    const removeButton = document.createElement('button');
+                    removeButton.classList.add('remove-button');
+                    removeButton.textContent = 'Remover';
+                    removeButton.dataset.selectionId = selectionId; // Usado para identificar a seleção
+                    detailsDiv.appendChild(removeButton);
+
+                    selectionCard.appendChild(detailsDiv);
+
+                    // Adicionar Resultado da Previsão
+                    if (status === 'FT') { // Apenas jogos finalizados
+                        const isPredictionCorrect = verificarPredicaoCorreta(selection);
+                        const resultadoSpan = document.createElement('span');
+                        resultadoSpan.innerHTML = `<strong>Resultado da Previsão:</strong> ${isPredictionCorrect ? '<span style="color: var(--cor-success);">Correta</span>' : '<span style="color: var(--cor-error);">Incorreta</span>'}`;
+                        detailsDiv.appendChild(resultadoSpan);
+
+                        // Adicionar classe para estilizar o cartão
+                        selectionCard.classList.add(isPredictionCorrect ? 'correct' : 'incorrect');
+                    }
+
+                    // Adicionar o cartão à seção de seleções
+                    selectionsSection.appendChild(selectionCard);
                 });
+
+                // Adicionar Event Listeners para os Botões de Remoção
+                const removeButtons = document.querySelectorAll('.remove-button');
+                removeButtons.forEach(button => {
+                    button.addEventListener('click', async (e) => {
+                        const selectionId = e.target.dataset.selectionId;
+                        if (selectionId) {
+                            const confirmRemover = confirm('Você tem certeza que deseja remover esta seleção?');
+                            if (confirmRemover) {
+                                await removerSelecao(selectionId);
+                            }
+                        }
+                    });
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar seleções:', error);
+                selectionsSection.innerHTML = `<p class="error">Ocorreu um erro ao carregar suas seleções. Por favor, tente novamente mais tarde.</p>`;
+            }
+        }
+
+        /**
+         * Função para remover uma seleção do Firestore
+         * @param {string} selectionId - ID da seleção a ser removida
+         */
+        async function removerSelecao(selectionId) {
+            if (!currentUser) return;
+
+            try {
+                const selectionDocRef = doc(db, 'users', currentUser.uid, 'selecoes', selectionId);
+                await deleteDoc(selectionDocRef);
+                console.log('Seleção removida com sucesso!');
+                // Recarregar as seleções
+                await carregarSelecoes();
+            } catch (error) {
+                console.error('Erro ao remover seleção:', error);
+                // Opcional: Exibir mensagem de erro no frontend
+                alert('Ocorreu um erro ao remover a seleção. Por favor, tente novamente.');
+            }
+        }
+
+        /**
+         * Função para formatar a data de "YYYY-MM-DD HH:MM:SS" para "DD/MM/YYYY HH:MM"
+         * @param {string|Timestamp} dateStr - Data no formato "YYYY-MM-DD HH:MM:SS" ou Timestamp do Firestore
+         * @returns {string} - Data formatada como "DD/MM/YYYY HH:MM"
+         */
+        function formatDate(dateStr) {
+            if (!dateStr || dateStr === 'Data não disponível') return 'Data não disponível';
+            let dateObj;
+            if (typeof dateStr === 'object' && dateStr.seconds !== undefined) {
+                // Caso seja um Timestamp do Firestore
+                dateObj = new Date(dateStr.seconds * 1000);
+            } else {
+                dateObj = new Date(dateStr);
+            }
+            if (isNaN(dateObj)) return 'Data inválida';
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Meses são indexados a partir de 0
+            const year = dateObj.getFullYear();
+            const hours = String(dateObj.getHours()).padStart(2, '0');
+            const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+            return `${day}/${month}/${year} ${hours}:${minutes}`;
+        }
+
+        /**
+         * Função para verificar se a previsão foi correta com base no resultado do jogo
+         * @param {Object} selection - Objeto contendo os dados da seleção
+         * @returns {boolean} - Retorna true se a previsão estiver correta, false caso contrário
+         */
+        function verificarPredicaoCorreta(selection) {
+            const homeGoals = parseInt(selection.home_goals, 10);
+            const awayGoals = parseInt(selection.away_goals, 10);
+            const resultadoReal = homeGoals > awayGoals ? '1' : (homeGoals < awayGoals ? '2' : 'X');
+            const previsao = selection.prediction;
+
+            if (previsao === '12') {
+                // Previsão '12' é correta se o jogo não terminou em empate
+                return resultadoReal === '1' || resultadoReal === '2';
             }
 
-            if (botaoFechar) {
-                botaoFechar.addEventListener('click', () => {
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                });
+            // Para previsões como '1X', '2X', '1', '2', 'X'
+            if (previsao.includes(resultadoReal)) {
+                return true;
             }
 
-            if (overlay) {
-                overlay.addEventListener('click', () => {
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                });
-            }
-        };
-
-        window.onload = () => {
-            inicializarPagina(); // Função já existente para a Sidebar
-            // buscarEProcessarCSV(); // Agora chamado após autenticação
-        };
+            return false;
+        }
     </script>
 </body>
 </html>

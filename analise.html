@@ -5,10 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperPro - Análises e Gráficos</title>
-    <!-- Link para ícones (Font Awesome) -->
+    <!-- Link para Font Awesome (para ícones) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Link para Google Fonts (Roboto e Montserrat para o título) -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto&display=swap" rel="stylesheet">
+    <!-- Favicon vazio para evitar erro 404 -->
+    <link rel="icon" href="data:,">
     <!-- Estilos CSS -->
     <style>
         /* Reset básico para garantir consistência entre navegadores */
@@ -330,20 +332,17 @@
         }
     </style>
 
-    <!-- Favicon vazio para evitar erro 404 -->
-    <link rel="icon" href="data:,">
-
-    <!-- Inclusão da Biblioteca PapaParse -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-
-    <!-- Script JavaScript com Firebase Modular SDK -->
+    <!-- Inclusão do Chart.js (versão ESM) -->
     <script type="module">
         // Importar as funções necessárias do SDK do Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { 
             getFirestore, 
             collection, 
-            getDocs 
+            getDocs, 
+            query, 
+            where, 
+            documentId 
         } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         import { 
             getAuth, 
@@ -353,7 +352,7 @@
             onAuthStateChanged, 
             updateProfile 
         } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { Chart, registerables } from 'https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.esm.js'; // Correção aqui
+        import { Chart, registerables } from 'https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.esm.js';
 
         // Registrar os componentes do Chart.js
         Chart.register(...registerables);
@@ -373,9 +372,6 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // URL da planilha publicada no formato CSV
-        const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTWlGNMaJfx6YMl0NaV2SIfCCKXxnP4Z51nXI62n0pG-qhHfQsHldYN4eYOtxanC2h2NzyzIfAHH8ax/pub?output=csv';
-
         // Variáveis para armazenamento de dados e métricas
         let selectedTips = [];
         let metrics = {
@@ -386,7 +382,55 @@
 
         let accuracyChartInstance = null;
 
-        // Função para buscar dicas selecionadas pelo usuário
+        /**
+         * Função para exibir ou esconder o indicador de carregamento
+         * @param {boolean} mostrar - Indica se deve mostrar ou esconder o carregamento
+         */
+        const mostrarCarregamento = (mostrar) => {
+            const loadingElement = document.getElementById('loading');
+            if (loadingElement) {
+                if (mostrar) {
+                    loadingElement.style.display = 'block';
+                } else {
+                    loadingElement.style.display = 'none';
+                }
+            }
+        };
+
+        /**
+         * Função para exibir mensagens de erro ou sucesso
+         * @param {string} mensagem - Mensagem a ser exibida
+         * @param {string} tipo - Tipo da mensagem ('error' ou 'success')
+         */
+        const exibirMensagem = (mensagem, tipo) => {
+            const messageElement = document.getElementById('message');
+            if (messageElement) {
+                messageElement.innerText = mensagem;
+                if (tipo === 'error') {
+                    messageElement.classList.remove('success');
+                    messageElement.classList.add('error');
+                } else if (tipo === 'success') {
+                    messageElement.classList.remove('error');
+                    messageElement.classList.add('success');
+                }
+            }
+        };
+
+        /**
+         * Função para limpar mensagens anteriores
+         */
+        const limparMensagens = () => {
+            const messageElement = document.getElementById('message');
+            if (messageElement) {
+                messageElement.innerText = '';
+                messageElement.classList.remove('error', 'success');
+            }
+        };
+
+        /**
+         * Função para buscar dicas selecionadas pelo usuário
+         * @param {Object} user - Objeto do usuário autenticado
+         */
         const fetchSelectedTips = async (user) => {
             mostrarCarregamento(true);
             limparMensagens();
@@ -401,21 +445,25 @@
                     return;
                 }
 
+                // Usando doc.id como dicaId, assumindo que selecoes docs têm IDs correspondentes aos tips
                 const dicaIds = selecoesSnapshot.docs.map(doc => doc.id);
 
-                // Buscar dados da planilha
-                const response = await fetch(sheetURL);
-                if (!response.ok) {
-                    throw new Error(`Erro ao buscar dados da planilha: ${response.statusText}`);
-                }
-                const csvData = await response.text();
-                const parsedData = Papa.parse(csvData, {
-                    header: true,
-                    skipEmptyLines: true
-                });
+                console.log('IDs das Dicas Selecionadas:', dicaIds);
 
-                // Filtrar dicas selecionadas
-                selectedTips = parsedData.data.filter(tip => dicaIds.includes(tip.ID));
+                // Firestore permite no máximo 10 itens no operador 'in'
+                const batchSize = 10;
+                let selectedTipsData = [];
+
+                for (let i = 0; i < dicaIds.length; i += batchSize) {
+                    const batchIds = dicaIds.slice(i, i + batchSize);
+                    const q = query(collection(db, 'tips'), where(documentId(), 'in', batchIds));
+                    const tipsSnapshot = await getDocs(q);
+                    tipsSnapshot.forEach(tipDoc => {
+                        selectedTipsData.push(tipDoc.data());
+                    });
+                }
+
+                selectedTips = selectedTipsData;
 
                 if (selectedTips.length === 0) {
                     exibirMensagem('Nenhuma dica válida selecionada para análise.', 'error');
@@ -435,7 +483,10 @@
             }
         };
 
-        // Função para calcular métricas
+        /**
+         * Função para calcular métricas
+         * @param {Array} tips - Array de objetos contendo as dicas selecionadas
+         */
         const calcularMetricas = (tips) => {
             metrics.acertos = 0;
             metrics.erros = 0;
@@ -451,13 +502,18 @@
             metrics.accuracy = totalValid > 0 ? ((metrics.acertos / totalValid) * 100).toFixed(2) : '0.00';
         };
 
-        // Função para renderizar a tabela de métricas
+        /**
+         * Função para renderizar a tabela de métricas
+         */
         const renderizarMetricas = () => {
             document.getElementById('acertos-value').innerText = `${metrics.acertos}`;
             document.getElementById('erros-value').innerText = `${metrics.erros}`;
+            document.getElementById('accuracy-value').innerText = `${metrics.accuracy}%`;
         };
 
-        // Função para renderizar o gráfico de acurácia
+        /**
+         * Função para renderizar o gráfico de acurácia
+         */
         const renderizarGraficoAcuracia = () => {
             const ctx = document.getElementById('accuracyChart').getContext('2d');
             if (accuracyChartInstance) {
@@ -495,43 +551,9 @@
             });
         };
 
-        // Função para mostrar ou esconder o indicador de carregamento
-        const mostrarCarregamento = (mostrar) => {
-            const loadingElement = document.getElementById('loading');
-            if (loadingElement) {
-                if (mostrar) {
-                    loadingElement.style.display = 'block';
-                } else {
-                    loadingElement.style.display = 'none';
-                }
-            }
-        };
-
-        // Função para exibir mensagens de erro ou sucesso
-        const exibirMensagem = (mensagem, tipo) => {
-            const messageElement = document.getElementById('message');
-            if (messageElement) {
-                messageElement.innerText = mensagem;
-                if (tipo === 'error') {
-                    messageElement.classList.remove('success');
-                    messageElement.classList.add('error');
-                } else if (tipo === 'success') {
-                    messageElement.classList.remove('error');
-                    messageElement.classList.add('success');
-                }
-            }
-        };
-
-        // Função para limpar mensagens anteriores
-        const limparMensagens = () => {
-            const messageElement = document.getElementById('message');
-            if (messageElement) {
-                messageElement.innerText = '';
-                messageElement.classList.remove('error', 'success');
-            }
-        };
-
-        // Função para fazer login
+        /**
+         * Função para fazer login
+         */
         const login = async () => {
             const email = prompt("Digite seu e-mail para login:");
             const password = prompt("Digite sua senha:");
@@ -550,7 +572,9 @@
             }
         };
 
-        // Função para registrar novo usuário
+        /**
+         * Função para registrar novo usuário
+         */
         const register = async () => {
             const email = prompt("Digite seu e-mail para registro:");
             const password = prompt("Digite sua senha:");
@@ -573,7 +597,9 @@
             }
         };
 
-        // Função para logout
+        /**
+         * Função para realizar logout
+         */
         const logout = async () => {
             try {
                 await signOut(auth);
@@ -585,7 +611,10 @@
             }
         };
 
-        // Atualizar UI baseado no estado de autenticação
+        /**
+         * Função para atualizar a interface de usuário baseada no estado de autenticação
+         * @param {Object} user - Objeto do usuário autenticado
+         */
         const updateAuthUI = (user) => {
             const logoutBtnSidebar = document.querySelectorAll('.logout-btn');
             if (user) {
@@ -615,7 +644,9 @@
             }
         };
 
-        // Listener para mudanças na autenticação
+        /**
+         * Listener para mudanças na autenticação
+         */
         onAuthStateChanged(auth, (user) => {
             updateAuthUI(user);
             if (user) {
@@ -627,7 +658,9 @@
             }
         });
 
-        // Função para abrir a sidebar (mobile)
+        /**
+         * Função para abrir a sidebar (mobile)
+         */
         const openSidebar = () => {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
@@ -637,7 +670,9 @@
             }
         };
 
-        // Função para fechar a sidebar (mobile)
+        /**
+         * Função para fechar a sidebar (mobile)
+         */
         const closeSidebarFunc = () => {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
@@ -647,7 +682,9 @@
             }
         };
 
-        // Inicialização da Plataforma
+        /**
+         * Função de inicialização da página
+         */
         const init = () => {
             // Event listener para o botão de menu (abrir sidebar)
             const menuBtn = document.getElementById('menu-btn');
@@ -690,7 +727,7 @@
         <nav class="sidebar-nav">
             <ul>
                 <li>
-                    <a href="index2.html" aria-label="Home">
+                    <a href="index3.html" aria-label="Home">
                         <i class="fas fa-home"></i>
                         Home
                     </a>
@@ -777,6 +814,10 @@
                         <tr>
                             <td>Perdeu</td>
                             <td id="erros-value">0</td>
+                        </tr>
+                        <tr>
+                            <td>Acurácia</td>
+                            <td id="accuracy-value">0.00%</td>
                         </tr>
                     </tbody>
                 </table>

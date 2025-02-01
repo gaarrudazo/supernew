@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuperPro CRM</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #f7f8f8, #e1e4e8);
+      color: #333;
+      padding: 20px;
+    }
+
+    header {
+      background-color: #0078D4;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+
+    .funnel {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 50px;
+      flex-wrap: wrap;
+    }
+
+    .stage {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 23%;
+      min-height: 500px;  /* Aumentando a altura das colunas */
+      transition: all 0.3s ease-in-out;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 20px;
+      border: 2px solid #0078D4; /* Borda azul fina ao redor das colunas */
+    }
+
+    .stage h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #0078D4;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      border-bottom: 2px solid #0078D4;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .deal-list {
+      list-style: none;
+      padding: 0;
+      overflow-y: auto;
+      height: 320px;
+      margin-top: 20px;
+      border-top: 2px solid #ddd;
+    }
+
+    .deal {
+      background-color: #f4f7fb;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      word-wrap: break-word;
+      position: relative;
+    }
+
+    .deal:hover {
+      background-color: #e1e6ef;
+      transform: translateY(-5px);
+    }
+
+    .deal strong {
+      font-size: 16px;
+      color: #333;
+    }
+
+    .deal span {
+      font-size: 14px;
+      color: #666;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .deal input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f4f7fb;
+      font-size: 14px;
+    }
+
+    /* X vermelho no canto para deletar a deal */
+    .delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: transparent;
+      color: red;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .delete-btn:hover {
+      color: darkred;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 14px;
+      color: #777;
+    }
+
+    footer a {
+      text-decoration: none;
+      color: #0078D4;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Botões de Ação */
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .action-buttons button {
+      background-color: #0078D4;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .action-buttons button:hover {
+      background-color: #005bb5;
+    }
+
+    /* Caixa de Pesquisa */
+    .search-box {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .search-box input {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      width: 300px;
+      font-size: 16px;
+      border: 1px solid #0078D4; /* Borda azul fina na caixa de pesquisa */
+    }
+
+    /* Adicionando flexbox para Lost ao lado de Won */
+    .funnel .stage:last-child {
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>SuperPro CRM</h1>
+  </header>
+
+  <div class="search-box">
+    <input type="text" id="searchDeals" placeholder="Search Deals...">
+  </div>
+
+  <main>
+    <div class="funnel">
+      <div class="stage" id="newContacts">
+        <h2 contenteditable="true">Novo Contato</h2>
+        <ul id="newContactsList" class="deal-list">
+          <!-- WhatsApp messages (deals) will appear here -->
+        </ul>
+        <div class="action-buttons">
+          <button onclick="addDeal('newContacts')">Add Deal</button>
+        </div>
+      </div>
+
+      <div class="stage" id="conversation">
+        <h2 contenteditable="true">Conversação</h2>
+        <ul id="conversationList" class="deal-list">
+          <!-- Deals will move here -->
+        </ul>
+        <div class="action-buttons">
+          <button onclick="addDeal('conversation')">Add Deal</button>
+        </div>
+      </div>
+
+      <div class="stage" id="negotiation">
+        <h2 contenteditable="true">Negociação</h2>
+        <ul id="negotiationList" class="deal-list">
+          <!-- Deals will move here -->
+        </ul>
+        <div class="action-buttons">
+          <button onclick="addDeal('negotiation')">Add Deal</button>
+        </div>
+      </div>
+
+      <div class="stage" id="won">
+        <h2 contenteditable="true">Won</h2>
+        <ul id="wonList" class="deal-list">
+          <!-- Deals will move here -->
+        </ul>
+        <div class="action-buttons">
+          <button onclick="addDeal('won')">Add Deal</button>
+        </div>
+      </div>
+
+      <div class="stage" id="lost">
+        <h2 contenteditable="true">Lost</h2>
+        <ul id="lostList" class="deal-list">
+          <!-- Deals will move here -->
+        </ul>
+        <div class="action-buttons">
+          <button onclick="addDeal('lost')">Add Deal</button>
+        </div>
+      </div>
+
+      <div class="stage" id="futuro">
+        <h2 contenteditable="true">Futuro</h2>
+        <ul id="futuroList" class="deal-list">
+          <!-- Deals will move here -->
+        </ul>
+        <div class="action-buttons">
+          <button onclick="addDeal('futuro')">Add Deal</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Developed by <a href="https://www.example.com" target="_blank">Your Company</a></p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+  <script>
+    const deals = [
+      { id: 1, contact: "John Doe", message: "Interested in your product!" },
+      { id: 2, contact: "Jane Smith", message: "Can you send more info?" },
+      { id: 3, contact: "Carlos Mendoza", message: "Let's talk pricing." }
+    ];
+
+    // Render a deal
+    function renderDeal(deal) {
+      const dealElement = document.createElement("li");
+      dealElement.classList.add("deal");
+      dealElement.dataset.id = deal.id;
+
+      const contactName = document.createElement("strong");
+      contactName.contentEditable = "true";
+      contactName.textContent = deal.contact;
+
+      const messageText = document.createElement("span");
+      messageText.contentEditable = "true";
+      messageText.textContent = deal.message;
+
+      const deleteButton = document.createElement("button");
+      deleteButton.classList.add("delete-btn");
+      deleteButton.textContent = "X";
+      deleteButton.onclick = () => deleteDeal(dealElement);
+
+      dealElement.appendChild(contactName);
+      dealElement.appendChild(messageText);
+      dealElement.appendChild(deleteButton);
+
+      return dealElement;
+    }
+
+    // Add a new deal
+    function addDeal(stage) {
+      const newDeal = { id: Date.now(), contact: "New Contact", message: "Message..." };
+      const stageList = document.getElementById(`${stage}List`);
+      stageList.appendChild(renderDeal(newDeal));
+    }
+
+    // Delete a deal
+    function deleteDeal(dealElement) {
+      dealElement.remove();
+    }
+
+    // Initial rendering of deals
+    const newContactsList = document.getElementById("newContactsList");
+    deals.forEach(deal => {
+      newContactsList.appendChild(renderDeal(deal));
+    });
+
+    // Enable dragging and dropping
+    const stages = ["newContacts", "conversation", "negotiation", "won", "lost", "futuro"];
+    stages.forEach(stage => {
+      const stageList = document.getElementById(`${stage}List`);
+      new Sortable(stageList, {
+        group: "deals",
+        animation: 150,
+        onEnd(evt) {
+          console.log(`Moved deal ${evt.item.dataset.id} to ${evt.from.id}`);
+        }
+      });
+    });
+
+    // Search Deals
+    document.getElementById("searchDeals").addEventListener("input", function(e) {
+      const query = e.target.value.toLowerCase();
+      const allDeals = document.querySelectorAll('.deal');
+      allDeals.forEach(deal => {
+        const contactName = deal.querySelector('strong').textContent.toLowerCase();
+        const message = deal.querySelector('span').textContent.toLowerCase();
+        if (contactName.includes(query) || message.includes(query)) {
+          deal.style.display = '';
+        } else {
+          deal.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
